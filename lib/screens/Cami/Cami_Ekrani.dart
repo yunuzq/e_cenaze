@@ -35,6 +35,17 @@ class _MosquesScreenState extends State<MosquesScreen> {
     "Süleymaniye Camii": const LatLng(41.0162, 28.9638),
     "Çoban Mustafa Paşa Cami": const LatLng(40.8026, 29.4308),
     "Bursa Ulu Cami": const LatLng(40.1826, 29.0630),
+    // Yeni eklenen camiler
+    "Selimiye Camii": const LatLng(41.6771, 26.5558),
+    "Sultanahmet Camii": const LatLng(41.0054, 28.9768),
+    "Fatih Camii": const LatLng(41.0190, 28.9497),
+    "Hacı Bayram-ı Veli Camii": const LatLng(39.9439, 32.8560),
+    "Konak Yalı Camii": const LatLng(38.4192, 27.1287),
+    "Sabancı Merkez Camii": const LatLng(37.0022, 35.3289),
+    "Melike Hatun Camii": const LatLng(39.9304, 32.8555),
+    "Muradiye Camii": const LatLng(40.1910, 29.0473),
+    "İplikçi (Mevlana) Camii": const LatLng(37.8724, 32.4988),
+    "Diyarbakır Ulu Cami": const LatLng(37.9137, 40.2362),
   };
 
   @override
@@ -203,10 +214,16 @@ class _MosquesScreenState extends State<MosquesScreen> {
                   options: MapOptions(
                     initialCenter: _initialCenter,
                     initialZoom: 9.0,
-                    interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
+                    // Tüm temel etkileşimler açık, sadece rotate kapalı
+                    interactionOptions: const InteractionOptions(
+                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                    ),
                   ),
                   children: [
-                    TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', userAgentPackageName: 'com.ecenaze.app'),
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.ecenaze.app',
+                    ),
                     MarkerLayer(markers: _markers),
                   ],
                 ),
@@ -227,11 +244,16 @@ class _MosquesScreenState extends State<MosquesScreen> {
                   color: sheetColor,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, spreadRadius: 2, offset: const Offset(0, -2))
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                      offset: const Offset(0, -2),
+                    )
                   ],
                 ),
                 child: ListView(
-                  controller: scrollController, // BU ÇOK ÖNEMLİ: Panel ile listenin senkron kayması için
+                  controller: scrollController, // Panel ile listenin senkron kayması için
                   padding: EdgeInsets.zero,
                   children: [
                     // GRİ TUTAMAÇ ÇİZGİSİ (Kullanıcı çekebileceğini anlasın)
@@ -261,7 +283,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
                               icon: const Icon(Icons.favorite, color: Colors.white),
                               label: const Text("FAVORİ CAMİLER", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF1E7228), 
+                                backgroundColor: const Color(0xFF1E7228),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               ),
                             ),
