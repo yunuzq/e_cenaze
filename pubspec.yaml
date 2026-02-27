@@ -32,9 +32,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  firebase_core: ^4.2.1
-  firebase_auth: ^6.1.2
-  cloud_firestore: ^6.1.0
   image_picker: ^1.0.7
   shared_preferences: ^2.2.2
   country_code_picker: ^3.0.0

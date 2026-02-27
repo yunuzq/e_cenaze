@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 
 import '../../utils.dart'; // Ortak değişkenler buradan geliyor
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../services/user_service.dart'; // AZ ÖNCE OLUŞTURDUĞUMUZ DOSYA
+// UserService'i sildik çünkü Firebase yok, hata fırlatır!
+// import '../../services/user_service.dart'; 
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,9 +18,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  final UserService _userService = UserService();
+  // Firebase olmadığı için bu servisi de iptal ettik
+  // final UserService _userService = UserService();
 
-  String _selectedCountryCode = "+90";
+// ignore: unused_field
+String _selectedCountryCode = "+90";
 
   Future<void> _register() async {
     if (_usernameController.text.isEmpty ||
@@ -55,67 +57,19 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    // +90 5XX... ile tam telefon
-    String fullPhoneNumber = _selectedCountryCode + phoneInput;
+    // 📌 FIREBASE KODLARI TAMAMEN TEMİZLENDİ - TASARIM MODU
+    // Artık backend ile işimiz yok, sadece web tasarımı için geçiş yapıyoruz.
+    if (!mounted) return;
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Kayıt Başarılı! (Tasarım Modu)"),
+        backgroundColor: Colors.green,
+      ),
+    );
 
-    // 📌 Firebase için telefon numarasını sahte email'e çeviriyoruz
-    // Aynı kural LOGIN tarafında da kullanılmalı:
-    // final email = '$fullPhoneNumber@ecenaze.com';
-    final email = '$fullPhoneNumber@ecenaze.com';
-
-    try {
-      // 1) FirebaseAuth ile kullanıcı oluştur
-      UserCredential cred =
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  email: email,
-  password: _passController.text,
-);
-
-debugPrint('UID: ${cred.user?.uid}');
-
-      // 2) Firestore'a kullanıcıyı kaydet
-      await _userService.saveUserData(
-        name: _usernameController.text.trim(),
-        phone: fullPhoneNumber,
-      );
-
-      // 3) Başarılı mesajı + login sayfasına geri dön
-      if (!mounted) return;  // <-- ADDED (En önemli satır)
-ScaffoldMessenger.of(context).showSnackBar(
-  const SnackBar(
-    content: Text("Kayıt Başarılı! Giriş yapabilirsiniz."),
-    backgroundColor: Colors.green,
-  ),
-);
-
-
-      if (mounted) Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      String msg = "Kayıt sırasında bir hata oluştu.";
-
-      if (e.code == 'email-already-in-use') {
-        // Çünkü email'i telefondan ürettik: aynı telefon = aynı email
-        msg = "Bu telefon numarası ile zaten bir hesap mevcut!";
-      } else if (e.code == 'weak-password') {
-        msg = "Şifreniz çok zayıf. Daha güçlü bir şifre giriniz.";
-      } else {
-        msg = e.message ?? msg;
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(msg),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Beklenmeyen bir hata oluştu."),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    // Kayıt başarılıymış gibi bir önceki sayfaya (girişe) dön
+    if (mounted) Navigator.pop(context);
   }
 
   void _toggleTheme() {

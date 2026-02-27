@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase/firebase_options.dart'; // Firebase ayar dosyası
 import 'data/global_data.dart';
 import 'screens/Giris Ekranlari/giris.dart';        // Giriş Ekranı
 import 'screens/Anasayfa/anasayfa.dart';       // Ana Sayfa
@@ -8,14 +6,7 @@ import 'screens/Cami/Cami_Ekrani.dart';  // Camiler ve Harita Ekranı
 import 'screens/Hesap/account_screens.dart'; // Hesap Ekranı
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Firebase başlatılıyor (Hata çözüm satırı burası)
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // await GlobalData.loadData(); // Veri yükleme varsa açabilirsin
+ // await GlobalData.loadData(); // Veri yükleme varsa açabilirsin
   runApp(const ECenazeApp());
 }
 
