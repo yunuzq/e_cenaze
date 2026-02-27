@@ -1,18 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart'; <--- SİLİNDİ
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/app_models.dart';
 
 class GlobalData {
   static String userName = "Kullanıcı Adı";
   static String phoneNumber = "0555 123 45 67";
-  static String email = "ornek@email.com";
+  static String email = "ornek1233@gmail.com";
   static Color profileColor = Colors.grey;
 
   static bool isImam = false;
-  static const String imamUsernameReal = "qçwöemrmtnyb";
-  static const String imamPasswordReal = "1029384756";
+  static const String imamUsernameReal = "admin123";
+  static const String imamPasswordReal = "123456";
 
   static bool isLocationPermissionGranted = false;
   static bool hasLocationPermissionBeenAsked = false;
@@ -28,22 +27,31 @@ class GlobalData {
   ];
 
   static List<Person> people = [];
-  static List<Mosque> mosques = [];
+  
+  // Camiler listesini başlangıçta _defaultMosques ile dolduruyoruz ki boş gelmesin
+  static List<Mosque> mosques = _defaultMosques;
+
+  // Favori Listesi (Yeni eklenen kısım)
+  static Set<String> favoriteMosqueIds = {};
 
   static final Map<String, Map<String, List<String>>> turkeyLocationData = {
     'İstanbul': {
-      'Fatih': ['Ali Kuşçu', 'Balat', 'Zeyrek', 'Topkapı'],
+      'Fatih': ['Sultan Ahmet Mahallesi', 'Süleymaniye Mah', 'Zeyrek', 'Ali Kuşçu'],
       'Üsküdar': ['Mimar Sinan', 'Valide-i Atik', 'Altunizade', 'Kuzguncuk'],
       'Kadıköy': ['Caferağa', 'Fenerbahçe', 'Göztepe'],
     },
     'Ankara': {
-      'Çankaya': ['Kızılay', 'Kocatepe', 'Bahçelievler'],
+      'Çankaya': ['Kültür Mahallesi', 'Kızılay', 'Kocatepe', 'Bahçelievler'],
       'Keçiören': ['Etlik', 'Bağlum', 'İncirli'],
       'Altındağ': ['Ulus', 'Hacıbayram'],
     },
     'İzmir': {
       'Konak': ['Alsancak', 'Basmane', 'Konak'],
       'Bornova': ['Erzene', 'Kazımdirik'],
+    },
+    'Bursa': {
+      'Osmangazi': ['Nalbantoğlu Mah', 'Şehreküstü', 'Çekirge'],
+      'Nilüfer': ['Fethiye', 'Beşevler'],
     },
   };
 
@@ -69,6 +77,12 @@ class GlobalData {
       mosques = _defaultMosques;
     }
 
+    // Favorileri yükle
+    final List<String>? favs = prefs.getStringList('favorite_mosque_ids');
+    if (favs != null) {
+      favoriteMosqueIds = favs.toSet();
+    }
+
     isLocationPermissionGranted = prefs.getBool('location_granted') ?? false;
     hasLocationPermissionBeenAsked = prefs.getBool('location_asked') ?? false;
   }
@@ -80,7 +94,7 @@ class GlobalData {
   }
 
   static Future<void> saveNotifications() async {
-     // Bildirim kaydetme (opsiyonel)
+    // Bildirim kaydetme (opsiyonel)
   }
 
   static Future<void> addPerson(Person person) async {
@@ -104,6 +118,12 @@ class GlobalData {
     isLocationPermissionGranted = granted;
     hasLocationPermissionBeenAsked = true;
   }
+  
+  // Favorileri kaydetme
+  static Future<void> saveFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('favorite_mosque_ids', favoriteMosqueIds.toList());
+  }
 
   static final List<Person> _defaultPersons = [
     Person(
@@ -112,32 +132,43 @@ class GlobalData {
     ),
   ];
 
-  // Location parametreleri temizlendi
+  // --- HARİTADA GÖZÜKEN CAMİLERİN BİLGİLERİ ---
   static final List<Mosque> _defaultMosques = [
     Mosque(
-      id: '1', name: 'Sultanahmet Camii', city: 'İstanbul', district: 'Fatih', neighborhood: 'Ali Kuşçu',
-      history: '1609-1617 yılları arasında I. Ahmed tarafından yaptırılmıştır.',
-      imageUrls: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Blue_Mosque_Courtyard_Dusk.jpg/1200px-Blue_Mosque_Courtyard_Dusk.jpg'],
+      id: 'cam_01', 
+      name: 'Ayasofya-i Kebir Cami-i Şerifi', 
+      city: 'İstanbul', 
+      district: 'Fatih', 
+      neighborhood: 'Sultan Ahmet Mahallesi, Ayasofya Meydanı No:1',
+      history: '1453 yılında Fatih Sultan Mehmed tarafından camiye çevrilmiştir.',
+      imageUrls: ['https://upload.wikimedia.org/wikipedia/commons/2/22/Hagia_Sophia_Mars_2013.jpg'],
     ),
     Mosque(
-      id: '2', name: 'Fatih Camii', city: 'İstanbul', district: 'Fatih', neighborhood: 'Zeyrek',
-      history: 'Fatih Sultan Mehmed tarafından yaptırılmış olan camidir.',
-      imageUrls: ['https://upload.wikimedia.org/wikipedia/commons/e/e5/Fatih_Mosque_Istanbul.jpg'],
-    ),
-    Mosque(
-      id: '3', name: 'Kocatepe Camii', city: 'Ankara', district: 'Çankaya', neighborhood: 'Kocatepe',
-      history: 'Ankara\'nın en büyük camilerinden biridir.',
+      id: 'cam_02', 
+      name: 'Kocatepe Camii', 
+      city: 'Ankara', 
+      district: 'Çankaya', 
+      neighborhood: 'Kültür Mahallesi, Dr. Mediha Eldem Sk. No:67',
+      history: 'Cumhuriyet dönemi Türk mimarisinin en önemli eserlerindendir.',
       imageUrls: ['https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Kocatepe_Mosque_Ankara.jpg/800px-Kocatepe_Mosque_Ankara.jpg'],
     ),
-     Mosque(
-      id: '5', name: 'Konak Camii (Yalı Camii)', city: 'İzmir', district: 'Konak', neighborhood: 'Konak',
-      history: 'İzmir Konak Meydanı\'nda yer alan tarihi camidir.',
-      imageUrls: ['https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Yal%C4%B1_Mosque_2015.jpg/800px-Yal%C4%B1_Mosque_2015.jpg'],
+    Mosque(
+      id: 'cam_03', 
+      name: 'Süleymaniye Camii', 
+      city: 'İstanbul', 
+      district: 'Fatih', 
+      neighborhood: 'Süleymaniye Mah, Prof. Sıddık Sami Onar Cd. No:1',
+      history: 'Mimar Sinan tarafından Kanuni Sultan Süleyman adına yapılmıştır.',
+      imageUrls: ['https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Suleymaniye_Mosque_Istanbul_Turkey.jpg/1200px-Suleymaniye_Mosque_Istanbul_Turkey.jpg'],
     ),
     Mosque(
-      id: '6', name: 'Büyük Çamlıca Camii', city: 'İstanbul', district: 'Üsküdar', neighborhood: 'Kuzguncuk',
-      history: 'Cumhuriyet tarihinin en büyük camisidir.',
-      imageUrls: ['https://example.com/camlica.jpg'],
+      id: 'cam_05', 
+      name: 'Bursa Ulu Cami', 
+      city: 'Bursa', 
+      district: 'Osmangazi', 
+      neighborhood: 'Nalbantoğlu Mah, Atatürk Cd.',
+      history: 'Erken dönem Osmanlı mimarisinin en önemli örneğidir.',
+      imageUrls: ['https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Bursa_Ulu_Camii_2010.jpg/1200px-Bursa_Ulu_Camii_2010.jpg'],
     ),
   ];
 }

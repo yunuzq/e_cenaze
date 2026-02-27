@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/global_data.dart';
-import '../screens/detail/detail_screens.dart'; // PrayerTimesScreen burada
+import '../screens/Detay/detaylar.dart'; // PrayerTimesScreen burada
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});

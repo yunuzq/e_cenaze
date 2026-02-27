@@ -31,15 +31,22 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  google_maps_flutter: ^2.14.0
+  firebase_core: ^4.2.1
+  firebase_auth: ^6.1.2
+  cloud_firestore: ^6.1.0
+  image_picker: ^1.0.7
   shared_preferences: ^2.2.2
+  country_code_picker: ^3.0.0
+  url_launcher: ^6.2.4
+  flutter_map: ^6.0.0
+  latlong2: ^0.9.0
+  
 dev_dependencies:
 
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -54,10 +61,15 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
+
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/ecenaze.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -89,3 +101,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/logo2.png"
+  adaptive_icon_background: "#000000" # Logonun arka plan rengini yaz
+  adaptive_icon_foreground: "assets/icon/logo2.png"
