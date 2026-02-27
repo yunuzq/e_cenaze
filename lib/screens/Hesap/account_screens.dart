@@ -81,6 +81,150 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
+  void _showFaqOverlay() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "SSS",
+      barrierColor: Colors.black.withValues(alpha: 0.5),
+      transitionDuration: const Duration(milliseconds: 250),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 26),
+                          const SizedBox(width: 8),
+                          const Text(
+                            "Sıkça Sorulan Sorular",
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: const [
+                      Card(
+                        elevation: 2,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "E-Cenaze nedir?",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "E-Cenaze, cenaze süreçlerinin takibini, bilgilendirmesini ve ilgili cami/görevlilerle iletişimi kolaylaştırmak için hazırlanmış dijital bir yardımcı uygulamadır.",
+                                style: TextStyle(fontSize: 14, height: 1.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Card(
+                        elevation: 2,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Cenaze namazı nasıl kılınır?",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "Cenaze namazı, ayakta ve kıbleye dönük olarak, niyet ile birlikte dört tekbir, Fatiha, salavat ve dua okunarak kılınan, rükû ve secdesi bulunmayan bir namazdır. Detaylar için bağlı olduğunuz cami veya din görevlinizin talimatlarını esas alınız.",
+                                style: TextStyle(fontSize: 14, height: 1.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Card(
+                        elevation: 2,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Kıyafetin önemi?",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "Cenaze merasimlerine katılırken sade, temiz ve vücut hatlarını belli etmeyen kıyafetler tercih edilmesi; hem dini hassasiyet hem de yakınlara saygı açısından önemlidir.",
+                                style: TextStyle(fontSize: 14, height: 1.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Card(
+                        elevation: 2,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Gassal nedir?",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "Gassal, vefat eden kişinin İslami usullere göre yıkanması ve kefenlenmesi işlemini gerçekleştiren görevliye verilen isimdir.",
+                                style: TextStyle(fontSize: 14, height: 1.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        return FadeTransition(
+          opacity: curved,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.98, end: 1.0).animate(curved),
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,6 +294,84 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
             const SizedBox(height: 20),
           ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.phone, color: Theme.of(context).primaryColor, size: 20),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            GlobalData.phoneNumber.isNotEmpty ? GlobalData.phoneNumber : "Telefon: 0 (xxx) xxx xx xx",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Theme.of(context).textTheme.bodySmall?.color,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.email, color: Theme.of(context).primaryColor, size: 18),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            "ecenaze.app@gmail.com",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).textTheme.bodySmall?.color,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              InkWell(
+                borderRadius: BorderRadius.circular(26),
+                onTap: _showFaqOverlay,
+                child: Ink(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4CAF50),
+                    borderRadius: BorderRadius.circular(26),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.18),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                  child: const Text(
+                    "SSS",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 0.6,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
