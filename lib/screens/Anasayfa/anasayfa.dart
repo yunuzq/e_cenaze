@@ -13,14 +13,18 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 
   String isimSansurle(String tamIsim) {
-    if (tamIsim.trim().isEmpty) return "";
-    List<String> kelimeler = tamIsim.trim().split(' ');
-    List<String> sansurluKelimeler = kelimeler.map((kelime) {
-      if (kelime.length <= 1) return kelime;
-      return kelime[0] + 'X' * (kelime.length - 1);
-    }).toList();
-    return sansurluKelimeler.join(' ');
-  }
+  if (tamIsim.isEmpty) return "";
+  
+  // İsim ve soyisimi parçalara ayır (birden fazla isim varsa diye)
+  List<String> parcalar = tamIsim.trim().split(' ');
+  
+  return parcalar.map((parca) {
+    if (parca.length <= 1) return parca;
+    
+    // İlk harfi al, geri kalanını karakter sayısı kadar yıldızla doldur
+    return "${parca[0]}${'*' * (parca.length - 1)}";
+  }).join(' ');
+}
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -136,8 +140,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // --- MOCK DATA ---
   final List<Person> _people = [
-    Person(name: "A**** Y***", date: "11 Aralık 2025", time: "10:30", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Fatih Camii", city: "İstanbul", burialPlace: "Edirnekapı Mezarlığı",cenazeSaati: "Belirtilmedi",),
-    Person(name: "M*** Ö****", date: "11 Aralık 2025", time: "09:15", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Ulu Camii", city: "Bursa", burialPlace: "Emirsultan Mezarlığı",cenazeSaati: "Belirtilmedi",),
+    Person(name: "AHMET YILMAZ", date: "11 Aralık 2025", time: "10:30", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Fatih Camii", city: "İstanbul", burialPlace: "Edirnekapı Mezarlığı",cenazeSaati: "Belirtilmedi",),
+    Person(name: "Mehmet Adil", date: "11 Aralık 2025", time: "09:15", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Ulu Camii", city: "Bursa", burialPlace: "Emirsultan Mezarlığı",cenazeSaati: "Belirtilmedi",),
     Person(name: "A*** D****", date: "11 Aralık 2025", time: "11:00", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Kocatepe Camii", city: "Ankara", burialPlace: "Karşıyaka Mezarlığı",cenazeSaati: "Belirtilmedi",),
     Person(name: "F**** K****", date: "10 Aralık 2025", time: "13:45", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Merkez Camii", city: "İzmir", burialPlace: "Hacılarkırı Mezarlığı",cenazeSaati: "Belirtilmedi",),
     Person(name: "M***** Ç******", date: "10 Aralık 2025", time: "14:20", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Selimiye Camii", city: "Edirne", burialPlace: "Şehir Mezarlığı",cenazeSaati: "Belirtilmedi",),
@@ -308,6 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
   itemCount: _people.length,
   itemBuilder: (context, index) {
     var person = _people[index];
+    
 
     return _PersonCard(person: person);
   },
@@ -337,6 +342,7 @@ class _PersonCard extends StatelessWidget {
       return kelime[0] + 'X' * (kelime.length - 1);
     }).join(' ');
   }
+  
 
   @override
   Widget build(BuildContext context) {
