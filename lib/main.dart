@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'data/global_data.dart';
 import 'screens/Giris Ekranlari/giris.dart';        // Giriş Ekranı
 import 'screens/Anasayfa/anasayfa.dart';       // Ana Sayfa
-import 'screens/Cami/Cami_Ekrani.dart';  // Camiler ve Harita Ekranı
+import 'screens/Cami/cami_ekrani.dart';  // Camiler ve Harita Ekranı
 import 'screens/Hesap/account_screens.dart'; // Hesap Ekranı
 
 Future<void> main() async {

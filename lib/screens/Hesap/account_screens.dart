@@ -231,6 +231,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   // Mevcut resmi yükle
   Future<void> _loadCurrentProfileImage() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       _tempProfileImagePath = prefs.getString('profile_image_${GlobalData.userName}');
     });
@@ -241,6 +242,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     try {
       // Galeriden seçim yap (İzin otomatik istenir)
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (!mounted) return;
       
       if (image != null) {
         setState(() {

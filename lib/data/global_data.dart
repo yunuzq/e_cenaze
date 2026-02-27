@@ -129,6 +129,8 @@ class GlobalData {
     Person(
       name: 'AYŞE YILMAZ', date: '10 Aralık 2025', time: '09:45', funeralTime: '12:45',
       prayerInfo: '(Öğle Namazı)', mosqueName: 'Fatih Camii', city: 'İstanbul', burialPlace: 'Edirnekapı Şehitliği',
+      // Örnek kullanım (Diğer parametrelerin yanına ekle):
+cenazeSaati: "Belirtilmedi",
     ),
   ];
 
