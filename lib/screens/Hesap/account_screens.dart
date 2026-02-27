@@ -293,85 +293,87 @@ class _AccountScreenState extends State<AccountScreen> {
               onTap: _showLogoutDialog
             ),
             const SizedBox(height: 20),
-          ],
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+            // İletişim ve SSS alanını sayfa içi, kaydırılabilir bölümün en altına aldık
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.phone, color: Theme.of(context).primaryColor, size: 20),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            GlobalData.phoneNumber.isNotEmpty ? GlobalData.phoneNumber : "Telefon: 0 (xxx) xxx xx xx",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Theme.of(context).textTheme.bodySmall?.color,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.phone, color: Theme.of(context).primaryColor, size: 20),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  GlobalData.phoneNumber.isNotEmpty ? GlobalData.phoneNumber : "Telefon: 0 (xxx) xxx xx xx",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Theme.of(context).textTheme.bodySmall?.color,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(Icons.email, color: Theme.of(context).primaryColor, size: 18),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  "ecenaze.app@gmail.com",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).textTheme.bodySmall?.color,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.email, color: Theme.of(context).primaryColor, size: 18),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            "ecenaze.app@gmail.com",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).textTheme.bodySmall?.color,
+                    const SizedBox(width: 12),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(26),
+                      onTap: _showFaqOverlay,
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF4CAF50),
+                          borderRadius: BorderRadius.circular(26),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.18),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
                             ),
-                            overflow: TextOverflow.ellipsis,
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                        child: const Text(
+                          "S.S.S",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.6,
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              InkWell(
-                borderRadius: BorderRadius.circular(26),
-                onTap: _showFaqOverlay,
-                child: Ink(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4CAF50),
-                    borderRadius: BorderRadius.circular(26),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.18),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
-                  child: const Text(
-                    "SSS",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 12),
+          ],
         ),
       ),
     );
