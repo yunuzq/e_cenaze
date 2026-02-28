@@ -10,8 +10,6 @@ class Person {
   final String mosqueName;
   final String city;
   final String burialPlace;
-  final String cenazeSaati;
-  
 
   Person({
     required this.name,
@@ -22,8 +20,6 @@ class Person {
     required this.mosqueName,
     required this.city,
     required this.burialPlace,
-    required this.cenazeSaati,
-    
   });
 
   Map<String, dynamic> toJson() => {
@@ -36,8 +32,6 @@ class Person {
       name: json['name'], date: json['date'], time: json['time'],
       funeralTime: json['funeralTime'] ?? "Belirtilmedi", prayerInfo: json['prayerInfo'],
       mosqueName: json['mosqueName'], city: json['city'], burialPlace: json['burialPlace'],
-      // Örnek kullanım (Diğer parametrelerin yanına ekle):
-cenazeSaati: "Belirtilmedi",
     );
   }
 }

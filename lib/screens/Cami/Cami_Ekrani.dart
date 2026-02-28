@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart'; 
 import '../../data/global_data.dart';
 import '../../models/app_models.dart';
-import 'cami_detaylari.dart';
+import 'Cami_Detaylari.dart';
 
 class MosquesScreen extends StatefulWidget {
   const MosquesScreen({super.key});
@@ -200,7 +200,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
                       children: [
                         Expanded(flex: 3, child: _buildDropdown(hint: 'Mahalle Seçiniz', value: _selectedNeighborhood, items: _neighborhoodsForDropdown, onChanged: (val) { setState(() { _selectedNeighborhood = val; _filterMosques(); }); })),
                         const SizedBox(width: 8),
-                        Expanded(flex: 1, child: Container(height: 48, decoration: BoxDecoration(color: Colors.redAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.redAccent.withValues(alpha: 0.1))), child: IconButton(onPressed: _resetFilters, icon: const Icon(Icons.refresh, color: Colors.redAccent), tooltip: 'Temizle'))),
+                        Expanded(flex: 1, child: Container(height: 48, decoration: BoxDecoration(color: Colors.redAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.redAccent.withOpacity(0.5))), child: IconButton(onPressed: _resetFilters, icon: const Icon(Icons.refresh, color: Colors.redAccent), tooltip: 'Temizle'))),
                       ],
                     ),
                   ],
@@ -298,7 +298,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
                     _displayedMosques.isEmpty
                         ? Padding(
                             padding: const EdgeInsets.all(20.0),
-                            child: Center(child: Text("Cami bulunamadı.", style: TextStyle(color: textColor.withValues(alpha: 0.6)))),
+                            child: Center(child: Text("Cami bulunamadı.", style: TextStyle(color: textColor.withOpacity(0.6)))),
                           )
                         : ListView.builder(
                             controller: scrollController, // İç liste scroll kontrolü
@@ -332,7 +332,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
     Color txtColor = isDark ? Colors.white : Colors.black;
     return Container(
       height: 48, padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.withValues(alpha: 0.4))),
+      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.withOpacity(0.4))),
       child: DropdownButtonHideUnderline(child: DropdownButton<String>(value: value, hint: Text(hint, style: TextStyle(fontSize: 14, color: Colors.grey)), isExpanded: true, icon: const Icon(Icons.keyboard_arrow_down, color: Colors.grey), dropdownColor: bgColor, style: TextStyle(color: txtColor), items: items.map((String item) => DropdownMenuItem<String>(value: item, child: Text(item))).toList(), onChanged: onChanged)),
     );
   }
@@ -347,7 +347,7 @@ class _MosqueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color cardBg = isDark ? Colors.grey[900]! : const Color(0xFFC8E6C9).withValues(alpha: 0.5);
+    Color cardBg = isDark ? Colors.grey[900]! : const Color(0xFFC8E6C9).withOpacity(0.5);
     Color titleColor = isDark ? Colors.white : Colors.black;
     Color subColor = isDark ? Colors.grey[400]! : Colors.grey[800]!;
 
@@ -422,7 +422,7 @@ class _FavoriteMosquesScreenState extends State<FavoriteMosquesScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _favoriteMosques.isEmpty
-          ? Center(child: Text("Henüz favori cami eklemediniz.", style: TextStyle(color: textColor.withValues(alpha: 0.6))))
+          ? Center(child: Text("Henüz favori cami eklemediniz.", style: TextStyle(color: textColor.withOpacity(0.6))))
           : ListView.builder(
               padding: const EdgeInsets.all(12),
               itemCount: _favoriteMosques.length,
