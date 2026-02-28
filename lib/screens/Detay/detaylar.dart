@@ -25,7 +25,7 @@ class PersonDetailScreen extends StatelessWidget {
             // CENAZE SAATİ GÖSTERİMİ
             Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.green.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.green)),
+              decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.green)),
               child: _buildDetailRow(Icons.access_time_filled, 'Cenaze Saati:', '${person.funeralTime} ${person.prayerInfo}'),
             ),
             const SizedBox(height: 10),

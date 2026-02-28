@@ -11,20 +11,6 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
-  String isimSansurle(String tamIsim) {
-  if (tamIsim.isEmpty) return "";
-  
-  // İsim ve soyisimi parçalara ayır (birden fazla isim varsa diye)
-  List<String> parcalar = tamIsim.trim().split(' ');
-  
-  return parcalar.map((parca) {
-    if (parca.length <= 1) return parca;
-    
-    // İlk harfi al, geri kalanını karakter sayısı kadar yıldızla doldur
-    return "${parca[0]}${'*' * (parca.length - 1)}";
-  }).join(' ');
-}
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -140,12 +126,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // --- MOCK DATA ---
   final List<Person> _people = [
-    Person(name: "AHMET YILMAZ", date: "11 Aralık 2025", time: "10:30", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Fatih Camii", city: "İstanbul", burialPlace: "Edirnekapı Mezarlığı",cenazeSaati: "Belirtilmedi",),
-    Person(name: "Mehmet Adil", date: "11 Aralık 2025", time: "09:15", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Ulu Camii", city: "Bursa", burialPlace: "Emirsultan Mezarlığı",cenazeSaati: "Belirtilmedi",),
-    Person(name: "A*** D****", date: "11 Aralık 2025", time: "11:00", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Kocatepe Camii", city: "Ankara", burialPlace: "Karşıyaka Mezarlığı",cenazeSaati: "Belirtilmedi",),
-    Person(name: "F**** K****", date: "10 Aralık 2025", time: "13:45", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Merkez Camii", city: "İzmir", burialPlace: "Hacılarkırı Mezarlığı",cenazeSaati: "Belirtilmedi",),
-    Person(name: "M***** Ç******", date: "10 Aralık 2025", time: "14:20", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Selimiye Camii", city: "Edirne", burialPlace: "Şehir Mezarlığı",cenazeSaati: "Belirtilmedi",),
-    Person(name: "H***** A*****", date: "10 Aralık 2025", time: "16:00", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Hacı Bayram Veli", city: "Ankara", burialPlace: "Gölbaşı Mezarlığı",cenazeSaati: "Belirtilmedi",),
+    Person(name: "A**** Y***", date: "11 Aralık 2025", time: "10:30", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Fatih Camii", city: "İstanbul", burialPlace: "Edirnekapı Mezarlığı"),
+    Person(name: "M*** Ö****", date: "11 Aralık 2025", time: "09:15", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Ulu Camii", city: "Bursa", burialPlace: "Emirsultan Mezarlığı"),
+    Person(name: "A*** D****", date: "11 Aralık 2025", time: "11:00", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Kocatepe Camii", city: "Ankara", burialPlace: "Karşıyaka Mezarlığı"),
+    Person(name: "F**** K****", date: "10 Aralık 2025", time: "13:45", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Merkez Camii", city: "İzmir", burialPlace: "Hacılarkırı Mezarlığı"),
+    Person(name: "M***** Ç******", date: "10 Aralık 2025", time: "14:20", funeralTime: "İkindi", prayerInfo: "(Cenaze Namazı)", mosqueName: "Selimiye Camii", city: "Edirne", burialPlace: "Şehir Mezarlığı"),
+    Person(name: "H***** A*****", date: "10 Aralık 2025", time: "16:00", funeralTime: "Öğle", prayerInfo: "(Cenaze Namazı)", mosqueName: "Hacı Bayram Veli", city: "Ankara", burialPlace: "Gölbaşı Mezarlığı"),
   ];
 
   @override
@@ -230,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                         margin: const EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.5),
+                          color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.white30),
                         ),
@@ -306,17 +292,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   
                   ListView.builder(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  itemCount: _people.length,
-  itemBuilder: (context, index) {
-    var person = _people[index];
-    
-
-    return _PersonCard(person: person);
-  },
-),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _people.length,
+                    itemBuilder: (context, index) {
+                      final person = _people[index];
+                      return _PersonCard(person: person);
+                    },
+                  ),
                   
                   const SizedBox(height: 20),
                 ],
@@ -334,16 +318,6 @@ class _PersonCard extends StatelessWidget {
   final Person person;
   const _PersonCard({required this.person});
 
-  // 1. SANSÜRLEME FONKSİYONUNU BURAYA EKLEDİK
-  String isimSansurle(String tamIsim) {
-    if (tamIsim.trim().isEmpty) return "";
-    return tamIsim.trim().split(' ').map((kelime) {
-      if (kelime.length <= 1) return kelime;
-      return kelime[0] + 'X' * (kelime.length - 1);
-    }).join(' ');
-  }
-  
-
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
@@ -351,16 +325,13 @@ class _PersonCard extends StatelessWidget {
     Color textColor = isDark ? Colors.white : Colors.black87;
     Color subTextColor = isDark ? Colors.grey[400]! : Colors.grey;
 
-    // 2. DEĞİŞKENİ BURADA OLUŞTURUYORUZ (MODELİ DEĞİŞTİRMİYORUZ)
-    String sansurluIsim = isimSansurle(person.name);
-
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: cardColor, 
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 6, offset: const Offset(0, 3)),
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6, offset: const Offset(0, 3)),
         ],
       ),
       child: Padding(
@@ -371,7 +342,7 @@ class _PersonCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.5),
+                color: const Color(0xFFE8F5E9).withOpacity(isDark ? 0.1 : 1), 
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -387,7 +358,7 @@ class _PersonCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    sansurluIsim, // 3. EKRANA ARTIK BU YAZILIYOR
+                    person.name,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
