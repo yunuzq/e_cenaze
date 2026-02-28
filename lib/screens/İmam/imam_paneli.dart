@@ -143,10 +143,13 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
 
     _availableMosques.sort((a, b) => a.compareTo(b)); // A-Z Sıralama
 
-    if (_availableMosques.isEmpty)
+    if (_availableMosques.isEmpty) {
       _availableMosques.add("Merkez Camii (Varsayılan)");
   }
+  }
 
+  
+ 
   void _saveFuneral() {
     if (_nameController.text.isEmpty ||
         _selectedCity == null ||
@@ -176,6 +179,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
       mosqueName: _selectedMosque!,
       city: _selectedCity!,
       burialPlace: _selectedBurialPlace!,
+      cenazeSaati: "Belirtilmedi"
     );
 
     GlobalData.addPerson(newPerson).then((_) {
@@ -467,7 +471,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
     Color labelColor = isDark ? Colors.white70 : Colors.black54;
 
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: "...",
       isExpanded: true,
       dropdownColor: dropdownBg,
       style: TextStyle(color: textColor, fontSize: 16),
