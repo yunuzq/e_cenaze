@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/app_models.dart'; // Mosque modelini çekmek için
+import '../../models/app_models.dart';
+import '../../theme/app_theme.dart';
 
 class MosqueDetailScreen extends StatelessWidget {
   final Mosque mosque;
@@ -8,7 +9,7 @@ class MosqueDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: AppTheme.bgDark,
       appBar: AppBar(
         title: Text(mosque.name),
         backgroundColor: Colors.transparent,
@@ -36,7 +37,7 @@ class MosqueDetailScreen extends StatelessWidget {
                 children: [
                   Text(
                     mosque.name,
-                    style: const TextStyle(color: Colors.green, fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: AppTheme.primary, fontSize: 24, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
                   Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/global_data.dart';
-import '../screens/Detay/detaylar.dart'; // PrayerTimesScreen burada
+import '../theme/app_theme.dart';
+import '../screens/Detay/detaylar.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -28,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               GlobalData.saveLocationPermission(true);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Konum izni verildi.")));
             },
-            child: const Text("İzin Ver", style: TextStyle(color: Colors.greenAccent)),
+            child: Text("İzin Ver", style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -38,23 +39,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Row(
+      title: Row(
         children: [
-          Icon(Icons.mosque, color: Color(0xFF4CAF50)),
-          SizedBox(width: 8),
-          Text('E-Cenaze', style: TextStyle(fontWeight: FontWeight.bold)),
+          Icon(Icons.mosque_rounded, color: AppTheme.primary, size: 24),
+          const SizedBox(width: 8),
+          Text('E-Cenaze', style: TextStyle(fontWeight: FontWeight.w700, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : AppTheme.textLight)),
         ],
       ),
       actions: [
         InkWell(
           onTap: () => _showPrayerTimes(context),
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.access_time, size: 18, color: Colors.orangeAccent),
-                Text('Namaz Vakitleri', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Icon(Icons.access_time_rounded, size: 20, color: AppTheme.primary),
+                Text('Namaz Vakitleri', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppTheme.primary)),
               ],
             ),
           ),
@@ -76,10 +79,15 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(25.0)),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: isDark ? AppTheme.cardDark : AppTheme.cardLight,
+        borderRadius: BorderRadius.circular(20),
+        border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+      ),
       child: TextField(
         controller: controller,
         style: const TextStyle(color: Colors.black),

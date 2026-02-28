@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart'; 
-import 'package:latlong2/latlong.dart'; 
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../../data/global_data.dart';
 import '../../models/app_models.dart';
+import '../../theme/app_theme.dart';
 import 'Cami_Detaylari.dart';
 
 class MosquesScreen extends StatefulWidget {
@@ -71,8 +72,8 @@ class _MosquesScreenState extends State<MosquesScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white, 
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: const Color(0xFF1E7228), width: 1),
-                  boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 1))],
+                  border: Border.all(color: AppTheme.primary, width: 1),
+                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 1, offset: Offset(0, 1))],
                 ),
                 child: Text(
                   name, 
@@ -80,7 +81,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Icon(Icons.location_on, color: Color(0xFF1E7228), size: 40, shadows: [Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2))]),
+              Icon(Icons.location_on_rounded, color: AppTheme.primary, size: 36),
             ],
           ),
         ),
@@ -117,7 +118,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Favorilerden çıkarıldı.")));
       } else {
         GlobalData.favoriteMosqueIds.add(mosqueId);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Favorilere eklendi!"), backgroundColor: Color(0xFF1E7228)));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Favorilere eklendi!"), backgroundColor: AppTheme.primary));
       }
       GlobalData.saveFavorites(); 
     });
@@ -138,14 +139,14 @@ class _MosquesScreenState extends State<MosquesScreen> {
     List<String> cities = GlobalData.turkeyLocationData.keys.toList()..sort();
     
     // Panel renkleri
-    Color sheetColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    Color sheetColor = isDark ? AppTheme.cardDark : AppTheme.cardLight;
     Color textColor = isDark ? Colors.white : Colors.black87;
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Klavye açılınca harita sıkışmasın
       appBar: AppBar(
-        title: const Text("Camiler ve Harita", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E7228),
+        title: const Text("Camiler ve Harita", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        backgroundColor: AppTheme.primary,
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
@@ -158,8 +159,8 @@ class _MosquesScreenState extends State<MosquesScreen> {
             children: [
               // FİLTRELER KISMI (Sabit kalsın istedik)
               Container(
-                color: isDark ? Colors.black : Colors.white,
-                padding: const EdgeInsets.all(12.0),
+                color: isDark ? AppTheme.bgDark : AppTheme.bgLight,
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
                     Row(
@@ -277,19 +278,19 @@ class _MosquesScreenState extends State<MosquesScreen> {
                         children: [
                           SizedBox(
                             width: double.infinity,
-                            height: 45,
+                            height: 48,
                             child: ElevatedButton.icon(
                               onPressed: _openFavoritesScreen,
-                              icon: const Icon(Icons.favorite, color: Colors.white),
-                              label: const Text("FAVORİ CAMİLER", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              icon: const Icon(Icons.favorite_rounded, color: Colors.white, size: 20),
+                              label: const Text("FAVORİ CAMİLER", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF1E7228),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                backgroundColor: AppTheme.primary,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               ),
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Text("Tüm Camiler", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+                          Text("Tüm Camiler", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textColor)),
                         ],
                       ),
                     ),
@@ -328,11 +329,15 @@ class _MosquesScreenState extends State<MosquesScreen> {
 
   Widget _buildDropdown({required String hint, required String? value, required List<String> items, required ValueChanged<String?> onChanged}) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color bgColor = isDark ? Colors.grey[850]! : Colors.white;
-    Color txtColor = isDark ? Colors.white : Colors.black;
+    Color bgColor = isDark ? AppTheme.cardDark : AppTheme.cardLight;
+    Color txtColor = isDark ? Colors.white : AppTheme.textLight;
     return Container(
-      height: 48, padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.withOpacity(0.4))),
+      height: 48, padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.grey.shade300, width: isDark ? 0.5 : 1),
+      ),
       child: DropdownButtonHideUnderline(child: DropdownButton<String>(value: value, hint: Text(hint, style: TextStyle(fontSize: 14, color: Colors.grey)), isExpanded: true, icon: const Icon(Icons.keyboard_arrow_down, color: Colors.grey), dropdownColor: bgColor, style: TextStyle(color: txtColor), items: items.map((String item) => DropdownMenuItem<String>(value: item, child: Text(item))).toList(), onChanged: onChanged)),
     );
   }
@@ -347,31 +352,49 @@ class _MosqueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color cardBg = isDark ? Colors.grey[900]! : const Color(0xFFC8E6C9).withOpacity(0.5);
-    Color titleColor = isDark ? Colors.white : Colors.black;
-    Color subColor = isDark ? Colors.grey[400]! : Colors.grey[800]!;
+    Color cardBg = isDark ? AppTheme.cardDark : AppTheme.cardLight;
+    Color titleColor = isDark ? Colors.white : AppTheme.textLight;
+    Color subColor = isDark ? Colors.grey[400]! : Colors.grey.shade600;
 
-    return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
-      child: Stack(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 12.0), padding: const EdgeInsets.all(12.0),
-            decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12.0), border: isDark ? Border.all(color: Colors.grey[800]!) : null),
-            child: Row(children: [
-              Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)]), child: const Icon(Icons.mosque, color: Color(0xFF1E7228), size: 30)),
-              const SizedBox(width: 16),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(mosque.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titleColor)), 
-                const SizedBox(height: 4), 
-                Row(children: [Icon(Icons.location_on_outlined, size: 14, color: subColor), const SizedBox(width: 4), Expanded(child: Text('${mosque.district} / ${mosque.city}', style: TextStyle(fontSize: 12, color: subColor), overflow: TextOverflow.ellipsis))]),
-                Text(mosque.neighborhood, style: TextStyle(fontSize: 12, color: subColor, fontStyle: FontStyle.italic), maxLines: 2, overflow: TextOverflow.ellipsis)
-              ])),
-              const Padding(padding: EdgeInsets.only(right: 30.0), child: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey)),
-            ]),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: AppTheme.tintAvatarBg, shape: BoxShape.circle),
+                    child: Icon(Icons.mosque_rounded, color: AppTheme.primary, size: 24),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(mosque.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: titleColor)),
+                    const SizedBox(height: 4),
+                    Row(children: [Icon(Icons.location_on_outlined, size: 14, color: subColor), const SizedBox(width: 4), Expanded(child: Text('${mosque.district} / ${mosque.city}', style: TextStyle(fontSize: 13, color: subColor), overflow: TextOverflow.ellipsis))]),
+                    Text(mosque.neighborhood, style: TextStyle(fontSize: 12, color: subColor, fontStyle: FontStyle.italic), maxLines: 2, overflow: TextOverflow.ellipsis)
+                  ])),
+                  const Padding(padding: EdgeInsets.only(right: 36), child: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey)),
+                ]),
+              ),
+              Positioned(top: 0, right: 0, child: IconButton(icon: Icon(isFavorite ? Icons.star_rounded : Icons.star_border_rounded, color: isFavorite ? Colors.amber : Colors.grey, size: 24), onPressed: onFavoriteToggle)),
+            ],
           ),
-          Positioned(top: 0, right: 0, child: IconButton(icon: Icon(isFavorite ? Icons.star : Icons.star_border, color: isFavorite ? Colors.amber : Colors.grey, size: 30), onPressed: onFavoriteToggle)),
-        ],
+        ),
       ),
     );
   }
@@ -417,8 +440,8 @@ class _FavoriteMosquesScreenState extends State<FavoriteMosquesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favori Camilerim", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E7228),
+        title: const Text("Favori Camilerim", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        backgroundColor: AppTheme.primary,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _favoriteMosques.isEmpty
@@ -428,20 +451,33 @@ class _FavoriteMosquesScreenState extends State<FavoriteMosquesScreen> {
               itemCount: _favoriteMosques.length,
               itemBuilder: (context, index) {
                 final mosque = _favoriteMosques[index];
-                return Card(
-                  elevation: 2,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  color: isDark ? Colors.grey[850] : Colors.white,
-                  child: ListTile(
-                    leading: const Icon(Icons.mosque, color: Color(0xFF1E7228), size: 30),
-                    title: Text(mosque.name, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
-                    subtitle: Text(mosque.neighborhood, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[700]), maxLines: 2, overflow: TextOverflow.ellipsis),
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppTheme.cardDark : AppTheme.cardLight,
+                    borderRadius: BorderRadius.circular(20),
+                    border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+                    boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      leading: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(color: AppTheme.tintAvatarBg, shape: BoxShape.circle),
+                        child: Icon(Icons.mosque_rounded, color: AppTheme.primary, size: 24),
+                      ),
+                      title: Text(mosque.name, style: TextStyle(fontWeight: FontWeight.w700, color: textColor)),
+                    subtitle: Text(mosque.neighborhood, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey.shade600), maxLines: 2, overflow: TextOverflow.ellipsis),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.redAccent),
                       onPressed: () => _removeFromFavorites(mosque.id),
                     ),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
                   ),
+                ),
                 );
               },
             ),

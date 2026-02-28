@@ -1,7 +1,8 @@
-import 'dart:async'; // Timer için gerekli
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../models/app_models.dart';
-import '../Detay/detaylar.dart'; 
+import '../../theme/app_theme.dart';
+import '../Detay/detaylar.dart';
 
 // --- GLOBAL İZİN DEĞİŞKENİ (Hafızada tutulur) ---
 bool globalLocationPermissionGranted = false;
@@ -117,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Konum izni alındı. Vakitler güncelleniyor..."), backgroundColor: Colors.green));
             },
-            child: const Text("İzin Ver", style: TextStyle(color: Color(0xFF1E7228), fontWeight: FontWeight.bold)),
+            child: Text("İzin Ver", style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -138,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color bgColor = Theme.of(context).scaffoldBackgroundColor;
-    Color textColor = isDark ? Colors.white : Colors.black87;
+    Color textColor = isDark ? Colors.white : AppTheme.textLight;
 
     final DateTime now = DateTime.now();
     final List<String> months = ["", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
@@ -149,8 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: bgColor, 
       appBar: AppBar(
-        title: const Text("Ana Sayfa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E7228),
+        title: const Text("Ana Sayfa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        backgroundColor: AppTheme.primary,
         centerTitle: true,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -161,10 +162,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              color: Color(0xFF1E7228), 
+              color: AppTheme.primary,
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
             ),
             child: Row(
@@ -174,10 +175,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   children: [
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)]
                       ),
                       padding: const EdgeInsets.all(2), 
                       child: CircleAvatar(
@@ -192,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: const [
                         Text(
                           "E-Cenaze",
-                          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Serif'),
+                          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
                         ),
                         Text(
                           "Hoşgeldiniz",
@@ -216,9 +216,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                         margin: const EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.white30),
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white24, width: 0.5),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -229,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Text(
                               globalLocationPermissionGranted ? _timeLeftString : "GEREKLİ", 
-                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
                             ),
                           ],
                         ),
@@ -240,8 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 60,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4, offset: const Offset(0, 2))],
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
                         children: [
@@ -249,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 18,
                             decoration: const BoxDecoration(
                               color: Colors.redAccent,
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                             ),
                             child: Center(
                               child: Text(year, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10)),
@@ -259,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Center(
                               child: Text(
                                 dayNumber,
-                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppTheme.textLight),
                               ),
                             ),
                           ),
@@ -267,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.only(bottom: 2),
                             child: Text(
                               monthName, 
-                              style: const TextStyle(fontSize: 9, color: Colors.grey, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 9, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
                             ),
                           ),
                         ],
@@ -288,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // SADECE BUGÜNKÜ VEFATLAR KALDI
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
-                    child: Text("Bugünkü Vefatlar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+                    child: Text("Bugünkü Vefatlar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textColor)),
                   ),
                   
                   ListView.builder(
@@ -313,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// --- VEFAT EDEN KİŞİ KARTI ---
+// --- VEFAT EDEN KİŞİ KARTI (Tint Avatar, InkWell, Mat) ---
 class _PersonCard extends StatelessWidget {
   final Person person;
   const _PersonCard({required this.person});
@@ -321,75 +320,71 @@ class _PersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color cardColor = isDark ? Colors.grey[900]! : Colors.white;
-    Color textColor = isDark ? Colors.white : Colors.black87;
-    Color subTextColor = isDark ? Colors.grey[400]! : Colors.grey;
+    Color cardColor = isDark ? AppTheme.cardDark : AppTheme.cardLight;
+    Color textColor = isDark ? Colors.white : AppTheme.textLight;
+    Color subTextColor = isDark ? Colors.grey[400]! : Colors.grey.shade600;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: cardColor, 
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6, offset: const Offset(0, 3)),
-        ],
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F5E9).withOpacity(isDark ? 0.1 : 1), 
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(
-                  person.name.isNotEmpty ? person.name[0] : "?",
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E7228)),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person))),
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppTheme.tintAvatarBg,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Center(
+                    child: Text(
+                      person.name.isNotEmpty ? person.name[0].toUpperCase() : "?",
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppTheme.primary),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    person.name,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(person.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: textColor), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 4),
+                      Text('${person.mosqueName}, ${person.city}', style: TextStyle(fontSize: 13, color: subTextColor, fontWeight: FontWeight.w400)),
+                      const SizedBox(height: 2),
+                      Text('${person.funeralTime} Vakti', style: const TextStyle(fontSize: 13, color: AppTheme.primary, fontWeight: FontWeight.w600)),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${person.mosqueName}, ${person.city}',
-                    style: TextStyle(fontSize: 12, color: subTextColor),
+                ),
+                Material(
+                  color: AppTheme.primary,
+                  borderRadius: BorderRadius.circular(20),
+                  child: InkWell(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person))),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      constraints: const BoxConstraints(minHeight: 48),
+                      alignment: Alignment.center,
+                      child: const Text('Detay', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+                    ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${person.funeralTime} Vakti',
-                    style: const TextStyle(fontSize: 12, color: Color(0xFF1E7228), fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person)));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1E7228),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                minimumSize: const Size(0, 36),
-              ),
-              child: const Text('Detay', style: TextStyle(fontSize: 12)),
-            ),
-          ],
+          ),
         ),
       ),
     );

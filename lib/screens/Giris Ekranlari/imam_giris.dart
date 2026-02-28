@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/global_data.dart';
+import '../../theme/app_theme.dart';
 import '../../utils.dart';
 import '../İmam/imam_paneli.dart';
 
@@ -31,9 +32,9 @@ class _ImamLoginPageState extends State<ImamLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = isDarkMode ? Colors.black : Colors.white;
-    Color textColor = isDarkMode ? Colors.white : Colors.black87;
-    Color inputFillColor = isDarkMode ? Colors.grey[900]! : Colors.white;
+    Color bgColor = isDarkMode ? AppTheme.bgDark : AppTheme.bgLight;
+    Color textColor = isDarkMode ? Colors.white : AppTheme.textLight;
+    Color inputFillColor = isDarkMode ? AppTheme.cardDark : Colors.white;
     Color inputBorderColor = isDarkMode ? Colors.grey[700]! : Colors.grey.shade400;
     Color hintColor = isDarkMode ? Colors.grey[400]! : Colors.grey;
 
@@ -58,7 +59,7 @@ class _ImamLoginPageState extends State<ImamLoginPage> {
               Text("İmam Kullanıcı Adı", style: TextStyle(fontWeight: FontWeight.w600, color: textColor)),
               const SizedBox(height: 8),
               Container(
-                decoration: BoxDecoration(color: inputFillColor, borderRadius: BorderRadius.circular(30), border: Border.all(color: inputBorderColor)),
+                decoration: BoxDecoration(color: inputFillColor, borderRadius: BorderRadius.circular(20), border: Border.all(color: inputBorderColor)),
                 child: TextField(controller: _usernameController, style: TextStyle(color: textColor), decoration: InputDecoration(prefixIcon: Icon(Icons.mosque, color: hintColor), hintText: "Kullanıcı Adı", hintStyle: TextStyle(color: hintColor), border: InputBorder.none, contentPadding: const EdgeInsets.symmetric(vertical: 15))),
               ),
               const SizedBox(height: 20),
@@ -66,7 +67,7 @@ class _ImamLoginPageState extends State<ImamLoginPage> {
               Text("Şifre", style: TextStyle(fontWeight: FontWeight.w600, color: textColor)),
               const SizedBox(height: 8),
               Container(
-                decoration: BoxDecoration(color: inputFillColor, borderRadius: BorderRadius.circular(30), border: Border.all(color: inputBorderColor)),
+                decoration: BoxDecoration(color: inputFillColor, borderRadius: BorderRadius.circular(20), border: Border.all(color: inputBorderColor)),
                 child: TextField(
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
@@ -83,7 +84,7 @@ class _ImamLoginPageState extends State<ImamLoginPage> {
               ),
               const SizedBox(height: 30),
 
-              SizedBox(height: 55, child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E7228), foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), elevation: 5), onPressed: _imamLogin, child: const Text("Giriş Yap", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))),
+              SizedBox(height: 48, child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 0), onPressed: _imamLogin, child: const Text("Giriş Yap", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)))),
             ],
           ),
         ),

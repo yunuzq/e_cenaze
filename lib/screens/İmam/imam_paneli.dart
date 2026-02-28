@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import '../../data/global_data.dart';
 import '../../models/app_models.dart';
+import '../../theme/app_theme.dart';
 
 class ImamPanelScreen extends StatefulWidget {
   const ImamPanelScreen({super.key});
@@ -68,7 +69,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1E7228), 
+              primary: AppTheme.primary, 
               onPrimary: Colors.white,
               onSurface: Colors.black, // Takvimdeki genel yazılar
             ),
@@ -102,7 +103,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1E7228), 
+              primary: AppTheme.primary, 
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
@@ -133,7 +134,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1E7228),
+              primary: AppTheme.primary,
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
@@ -245,7 +246,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("✅ Vefat ilanı sisteme başarıyla kaydedildi!"),
-          backgroundColor: Color(0xFF1E7228),
+          backgroundColor: AppTheme.primary,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -281,7 +282,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
     Color bgColor = isDark ? Colors.black : Colors.white;
     Color cardColor = isDark ? Colors.grey[900]! : Colors.grey[100]!;
     Color textColor = isDark ? Colors.white : Colors.black87;
-    Color iconColor = const Color(0xFF1E7228); 
+    Color iconColor = AppTheme.primary; 
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -302,7 +303,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Column(
           children: [
-            const Icon(Icons.mosque, size: 64, color: Color(0xFF1E7228)),
+            Icon(Icons.mosque_rounded, size: 64, color: AppTheme.primary),
             const SizedBox(height: 12),
             Text(
               "Yeni Vefat İlanı Girişi",
@@ -495,7 +496,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E7228), 
+                  backgroundColor: AppTheme.primary, 
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16), 
@@ -533,7 +534,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: labelColor), 
-        prefixIcon: icon != null ? Icon(icon, color: const Color(0xFF1E7228)) : null,
+        prefixIcon: icon != null ? Icon(icon, color: AppTheme.primary) : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true,
         fillColor: cardColor,

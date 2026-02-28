@@ -1,8 +1,9 @@
-import 'dart:io'; // Dosya işlemleri için
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Galeri erişimi için
-import 'package:shared_preferences/shared_preferences.dart'; // Kayıt için
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/global_data.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/common_widgets.dart';
 import '../Giris Ekranlari/giris.dart';
 
@@ -120,11 +121,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.all(16),
-                    children: const [
+                    children: [
                       Card(
-                        elevation: 2,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -143,9 +145,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                       SizedBox(height: 12),
                       Card(
-                        elevation: 2,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -164,9 +167,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                       SizedBox(height: 12),
                       Card(
-                        elevation: 2,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -185,9 +189,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                       SizedBox(height: 12),
                       Card(
-                        elevation: 2,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -264,8 +269,8 @@ class _AccountScreenState extends State<AccountScreen> {
               Container(
                 margin: const EdgeInsets.only(top: 4),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(color: Colors.green.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(20)),
-                child: const Text("Yetkili İmam Hesabı", style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold)),
+                decoration: BoxDecoration(color: AppTheme.tintAvatarBg, borderRadius: BorderRadius.circular(20)),
+                child: Text("Yetkili İmam Hesabı", style: TextStyle(color: AppTheme.primary, fontSize: 13, fontWeight: FontWeight.w700)),
               ),
             
             const SizedBox(height: 32),
@@ -346,7 +351,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       onTap: _showFaqOverlay,
                       child: Ink(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF4CAF50),
+                          color: AppTheme.primary,
                           borderRadius: BorderRadius.circular(26),
                           boxShadow: [
                             BoxShadow(
@@ -380,7 +385,7 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Widget _buildMenuItem(BuildContext context, {required IconData icon, required String text, bool isDestructive = false, bool hasNotification = false, required VoidCallback onTap}) {
-    Color boxColor = isDestructive ? Colors.redAccent : const Color(0xFF4CAF50);
+    Color boxColor = isDestructive ? Colors.redAccent : AppTheme.primary;
 
     return GestureDetector(
       onTap: onTap,
@@ -531,7 +536,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: const Row(
               children: [
-                Icon(Icons.lock_outline, color: Color(0xFF4CAF50)),
+                Icon(Icons.lock_outline_rounded, color: AppTheme.primary),
                 SizedBox(width: 8),
                 Text("Şifre Değiştir", style: TextStyle(fontWeight: FontWeight.bold)),
               ],
@@ -574,7 +579,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 child: const Text("İptal", style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4CAF50), foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
                 onPressed: () {
                   // 1. ESKİ ŞİFRE KONTROLÜ (Giriş yapılan şifreyle uyuşmalı)
                   // Eğer savedPassword boşsa (beni hatırla yapılmadıysa) basitlik adına "123456" gibi dummy kabul edebiliriz ama
@@ -646,7 +651,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       child: Container(
                         height: 45, width: 45,
                         decoration: BoxDecoration(
-                          color: Colors.green,
+                          color: AppTheme.primary,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 3),
                           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 5)]
@@ -727,7 +732,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 icon: const Icon(Icons.save),
                 label: const Text("Değişiklikleri Kaydet", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4CAF50),
+                  backgroundColor: AppTheme.primary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   elevation: 5,
                 ),
@@ -760,20 +765,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 8.0, bottom: 10),
-            child: Text("Görünüm", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green)),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, bottom: 10),
+            child: Text("Görünüm", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Theme.of(context).primaryColor)),
           ),
           
           // Beyaz Tema Seçeneği
           Card(
-            elevation: !isDark ? 4 : 1,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: !isDark ? Colors.green : Colors.transparent, width: 2)),
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: !isDark ? AppTheme.primary : Colors.transparent, width: 2)),
             color: !isDark ? Colors.white : null,
             child: ListTile(
               leading: const Icon(Icons.wb_sunny, color: Colors.orange),
-              title: Text("Aydınlık (Beyaz) Tema", style: TextStyle(color: !isDark ? Colors.black : null, fontWeight: FontWeight.bold)),
-              trailing: !isDark ? const Icon(Icons.check_circle, color: Colors.green, size: 28) : const Icon(Icons.circle_outlined, color: Colors.grey),
+              title: Text("Aydınlık Tema", style: TextStyle(color: !isDark ? AppTheme.textLight : null, fontWeight: FontWeight.w700)),
+              trailing: !isDark ? Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 28) : const Icon(Icons.circle_outlined, color: Colors.grey),
               onTap: () {
                 GlobalData.saveTheme(false); // Beyaz tema kaydet
                 setState(() {}); // Ekranı yenile
@@ -785,13 +790,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Siyah Tema Seçeneği
           Card(
-            elevation: isDark ? 4 : 1,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: isDark ? Colors.green : Colors.transparent, width: 2)),
-            color: isDark ? const Color(0xFF1E1E1E) : null,
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: isDark ? AppTheme.primary : Colors.transparent, width: 2)),
+            color: isDark ? AppTheme.cardDark : null,
             child: ListTile(
               leading: const Icon(Icons.nights_stay, color: Colors.blueAccent),
-              title: const Text("Karanlık (Siyah) Tema", style: TextStyle(fontWeight: FontWeight.bold)),
-              trailing: isDark ? const Icon(Icons.check_circle, color: Colors.green, size: 28) : const Icon(Icons.circle_outlined, color: Colors.grey),
+              title: const Text("Karanlık Tema", style: TextStyle(fontWeight: FontWeight.w700)),
+              trailing: isDark ? Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 28) : const Icon(Icons.circle_outlined, color: Colors.grey),
               onTap: () {
                 GlobalData.saveTheme(true); // Siyah tema kaydet
                 setState(() {}); // Ekranı yenile
@@ -848,8 +853,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ? const Color(0xFF4CAF50) // Okunmamış: Canlı Yeşil
               : const Color(0xFF4CAF50).withValues(alpha: 0.15); // Okunmuş: İyice sönük, saydam yeşil
           
-          Color borderColor = !notification.isRead ? Colors.greenAccent : Colors.transparent;
-          Color iconColor = !notification.isRead ? Colors.white : Colors.green.withValues(alpha: 0.7);
+          Color borderColor = !notification.isRead ? AppTheme.primary : Colors.transparent;
+          Color iconColor = !notification.isRead ? Colors.white : AppTheme.primary.withValues(alpha: 0.7);
           Color titleColor = !notification.isRead ? Colors.white : Theme.of(context).textTheme.bodyLarge!.color!;
           Color bodyColor = !notification.isRead ? Colors.white.withValues(alpha: 0.9) : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.7);
 
@@ -865,10 +870,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: cardColor,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20),
                 // Okunmamışsa gölge ekle
                 boxShadow: !notification.isRead 
-                  ? [BoxShadow(color: Colors.green.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 4))] 
+                  ? [BoxShadow(color: AppTheme.primary.withValues(alpha: 0.2), blurRadius: 1, offset: const Offset(0, 1))] 
                   : [],
                 border: Border.all(color: borderColor, width: notification.isRead ? 0 : 2),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/app_models.dart';
+import '../../theme/app_theme.dart';
 
 // --- CENAZE DETAY ---
 class PersonDetailScreen extends StatelessWidget {
@@ -15,17 +16,17 @@ class PersonDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Vefat Bilgileri', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF4CAF50))),
+            Text('Vefat Bilgileri', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppTheme.primary)),
             const SizedBox(height: 16),
             _buildDetailRow(Icons.calendar_today, 'Vefat Tarihi:', person.date),
             
             const SizedBox(height: 24),
-            const Text('Cenaze Bilgileri', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF4CAF50))),
+            Text('Cenaze Bilgileri', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppTheme.primary)),
             const SizedBox(height: 16),
             // CENAZE SAATİ GÖSTERİMİ
             Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.green)),
+              decoration: BoxDecoration(color: AppTheme.tintAvatarBg, borderRadius: BorderRadius.circular(20), border: Border.all(color: AppTheme.primary)),
               child: _buildDetailRow(Icons.access_time_filled, 'Cenaze Saati:', '${person.funeralTime} ${person.prayerInfo}'),
             ),
             const SizedBox(height: 10),

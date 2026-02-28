@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'data/global_data.dart';
-import 'screens/Giris Ekranlari/giris.dart';        // Giriş Ekranı
-import 'screens/Anasayfa/anasayfa.dart';       // Ana Sayfa
-import 'screens/Cami/Cami_Ekrani.dart';  // Camiler ve Harita Ekranı
-import 'screens/Hesap/account_screens.dart'; // Hesap Ekranı
+import 'theme/app_theme.dart';
+import 'screens/Giris Ekranlari/giris.dart';
+import 'screens/Anasayfa/anasayfa.dart';
+import 'screens/Cami/Cami_Ekrani.dart';
+import 'screens/Hesap/account_screens.dart';
 
 Future<void> main() async {
- // await GlobalData.loadData(); // Veri yükleme varsa açabilirsin
   runApp(const ECenazeApp());
 }
 
@@ -21,47 +21,79 @@ class ECenazeApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'E-Cenaze',
-          
-          // --- KOYU TEMA ---
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            primaryColor: const Color(0xFF1E7228),
-            scaffoldBackgroundColor: const Color(0xFF121212),
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0xFF1E7228),
-              secondary: Color(0xFF81C784),
-            ),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              iconTheme: IconThemeData(color: Colors.white),
-              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            useMaterial3: true,
-          ),
-
-          // --- AÇIK TEMA ---
-          theme: ThemeData(
-            brightness: Brightness.light,
-            primaryColor: const Color(0xFF1E7228),
-            scaffoldBackgroundColor: Colors.white,
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1E7228),
-              secondary: Color(0xFF81C784),
-            ),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              iconTheme: IconThemeData(color: Colors.black),
-              titleTextStyle: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            useMaterial3: true,
-          ),
-          
-          themeMode: currentMode, // Seçilen tema
-          home: const LoginPage(), // İlk açılış sayfası
+          darkTheme: _buildDarkTheme(),
+          theme: _buildLightTheme(),
+          themeMode: currentMode,
+          home: const LoginPage(),
         );
       },
+    );
+  }
+
+  ThemeData _buildDarkTheme() {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: AppTheme.primary,
+      scaffoldBackgroundColor: AppTheme.bgDark,
+      colorScheme: const ColorScheme.dark(
+        primary: AppTheme.primary,
+        secondary: AppTheme.primary,
+        surface: AppTheme.cardDark,
+      ),
+      cardTheme: CardThemeData(
+        color: AppTheme.cardDark,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primary,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(0, 48),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+      ),
+      useMaterial3: true,
+    );
+  }
+
+  ThemeData _buildLightTheme() {
+    return ThemeData(
+      brightness: Brightness.light,
+      primaryColor: AppTheme.primary,
+      scaffoldBackgroundColor: AppTheme.bgLight,
+      colorScheme: const ColorScheme.light(
+        primary: AppTheme.primary,
+        secondary: AppTheme.primary,
+        surface: AppTheme.cardLight,
+        onSurface: AppTheme.textLight,
+      ),
+      cardTheme: CardThemeData(
+        color: AppTheme.cardLight,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primary,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(0, 48),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: AppTheme.textLight),
+        titleTextStyle: TextStyle(color: AppTheme.textLight, fontSize: 20, fontWeight: FontWeight.w700),
+      ),
+      useMaterial3: true,
     );
   }
 }
@@ -91,18 +123,27 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
-          BottomNavigationBarItem(icon: Icon(Icons.mosque), label: 'Camiler'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Hesap'),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xFF1E7228), // Yeşil Renk
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        type: BottomNavigationBarType.fixed,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: isDark ? AppTheme.cardDark : AppTheme.cardLight,
+          border: isDark ? Border(top: BorderSide(color: Colors.white12, width: 0.5)) : null,
+        ),
+        child: SafeArea(
+          child: BottomNavigationBar(
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Ana Sayfa'),
+              BottomNavigationBarItem(icon: Icon(Icons.mosque_rounded), label: 'Camiler'),
+              BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Hesap'),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: AppTheme.primary,
+            unselectedItemColor: Colors.grey,
+            onTap: _onItemTapped,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            type: BottomNavigationBarType.fixed,
+          ),
+        ),
       ),
     );
   }

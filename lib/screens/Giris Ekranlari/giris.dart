@@ -3,9 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../data/global_data.dart';
-import '../../utils.dart'; 
-import '../../main.dart'; 
-import 'imam_giris.dart'; 
+import '../../theme/app_theme.dart';
+import '../../utils.dart';
+import '../../main.dart';
+import 'imam_giris.dart';
 import 'kayit.dart';
 
 class LoginPage extends StatefulWidget {
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text("Evet", style: TextStyle(color: Color(0xFF1E7228), fontWeight: FontWeight.bold)),
+              child: Text("Evet", style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -110,8 +111,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = isDarkMode ? Colors.black : Colors.white;
-    Color textColor = isDarkMode ? Colors.white : Colors.black87;
+    Color bgColor = isDarkMode ? AppTheme.bgDark : AppTheme.bgLight;
+    Color textColor = isDarkMode ? Colors.white : AppTheme.textLight;
     Color inputFill = isDarkMode ? Colors.grey[900]! : Colors.grey[100]!;
     Color borderColor = isDarkMode ? Colors.grey[800]! : Colors.grey.shade300;
     Color hintColor = isDarkMode ? Colors.grey[500]! : Colors.grey;
@@ -143,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 120, 
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.account_balance, size: 80, color: const Color(0xFF1E7228));
+                        return Icon(Icons.account_balance_rounded, size: 80, color: AppTheme.primary);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -229,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: 24,
                               child: Checkbox(
                                 value: _rememberMe, 
-                                activeColor: const Color(0xFF1E7228), 
+                                activeColor: AppTheme.primary, 
                                 onChanged: (v) => setState(() => _rememberMe = v!)
                               ),
                             ),
@@ -239,7 +240,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         TextButton(
                           onPressed: _showForgotPassword, 
-                          child: const Text("Şifremi Unuttum", style: TextStyle(color: Color(0xFF1E7228), fontWeight: FontWeight.bold, fontSize: 13))
+                          child: Text("Şifremi Unuttum", style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w700, fontSize: 13))
                         ),
                       ]
                     ),
@@ -247,10 +248,11 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E7228), 
-                        foregroundColor: Colors.white, 
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), 
+                        backgroundColor: AppTheme.primary,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 48),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         elevation: 2
                       ), 
                       onPressed: _performLogin, 
@@ -260,12 +262,12 @@ class _LoginPageState extends State<LoginPage> {
                     OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
-                        side: const BorderSide(color: Color(0xFF1E7228)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), 
+                        side: const BorderSide(color: AppTheme.primary),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), 
                       ), 
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ImamLoginPage())), 
-                      icon: const Icon(Icons.mosque, color: Color(0xFF1E7228)),
-                      label: const Text("İmam/Görevli Girişi", style: TextStyle(fontSize: 16, color: Color(0xFF1E7228), fontWeight: FontWeight.bold))
+                      icon: const Icon(Icons.mosque_rounded, color: AppTheme.primary),
+                      label: const Text("İmam/Görevli Girişi", style: TextStyle(fontSize: 16, color: AppTheme.primary, fontWeight: FontWeight.w700))
                     ),
                     
                     const SizedBox(height: 25),
@@ -277,7 +279,7 @@ class _LoginPageState extends State<LoginPage> {
                             text: "Henüz hesabınız yok mu? ", 
                             style: TextStyle(color: hintColor, fontSize: 14), 
                             children: const [
-                              TextSpan(text: "Kayıt Ol", style: TextStyle(color: Color(0xFF1E7228), fontWeight: FontWeight.bold))
+                              TextSpan(text: "Kayıt Ol", style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w700))
                             ]
                           )
                         )
@@ -335,7 +337,7 @@ class ForgotPasswordDialog extends StatelessWidget {
       title: const Text("Şifremi Unuttum"), 
       content: const Text("Şifre sıfırlama özelliği yakında eklenecektir. Lütfen destek ile iletişime geçin."), 
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text("Kapat", style: TextStyle(color: Color(0xFF1E7228))))
+        TextButton(onPressed: () => Navigator.pop(context), child: Text("Kapat", style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w600)))
       ]
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-
-import '../../utils.dart'; // Ortak değişkenler buradan geliyor
+import '../../theme/app_theme.dart';
+import '../../utils.dart';
 // UserService'i sildik çünkü Firebase yok, hata fırlatır!
 // import '../../services/user_service.dart'; 
 
@@ -80,9 +80,9 @@ String _selectedCountryCode = "+90";
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = isDarkMode ? Colors.black : Colors.white;
-    Color textColor = isDarkMode ? Colors.white : Colors.black87;
-    Color inputFillColor = isDarkMode ? Colors.grey[900]! : Colors.white;
+    Color bgColor = isDarkMode ? AppTheme.bgDark : AppTheme.bgLight;
+    Color textColor = isDarkMode ? Colors.white : AppTheme.textLight;
+    Color inputFillColor = isDarkMode ? AppTheme.cardDark : Colors.white;
     Color inputBorderColor =
         isDarkMode ? Colors.grey[700]! : Colors.grey.shade400;
     Color hintColor = isDarkMode ? Colors.grey[400]! : Colors.grey;
@@ -259,7 +259,7 @@ String _selectedCountryCode = "+90";
                 height: 55,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E7228),
+                    backgroundColor: AppTheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
