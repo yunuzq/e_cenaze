@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import '../../data/global_data.dart';
 import '../../models/app_models.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 import 'Cami_Detaylari.dart';
 
 class MosquesScreen extends StatefulWidget {
@@ -276,16 +277,22 @@ class _MosquesScreenState extends State<MosquesScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: 48,
-                            child: ElevatedButton.icon(
-                              onPressed: _openFavoritesScreen,
-                              icon: const Icon(Icons.favorite_rounded, color: Colors.white, size: 20),
-                              label: const Text("FAVORİ CAMİLER", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppTheme.primary,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          FluidScale(
+                            onTap: _openFavoritesScreen,
+                            child: Container(
+                              width: double.infinity,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: AppTheme.primary,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.favorite_rounded, color: Colors.white, size: 20),
+                                  SizedBox(width: 8),
+                                  Text("FAVORİ CAMİLER", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
+                                ],
                               ),
                             ),
                           ),
@@ -356,20 +363,17 @@ class _MosqueCard extends StatelessWidget {
     Color titleColor = isDark ? Colors.white : AppTheme.textLight;
     Color subColor = isDark ? Colors.grey[400]! : Colors.grey.shade600;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(20),
-        border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
+    return FluidScale(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: cardBg,
           borderRadius: BorderRadius.circular(20),
-          child: Stack(
+          border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+          boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
+        ),
+        child: Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -393,7 +397,6 @@ class _MosqueCard extends StatelessWidget {
               ),
               Positioned(top: 0, right: 0, child: IconButton(icon: Icon(isFavorite ? Icons.star_rounded : Icons.star_border_rounded, color: isFavorite ? Colors.amber : Colors.grey, size: 24), onPressed: onFavoriteToggle)),
             ],
-          ),
         ),
       ),
     );
@@ -451,16 +454,16 @@ class _FavoriteMosquesScreenState extends State<FavoriteMosquesScreen> {
               itemCount: _favoriteMosques.length,
               itemBuilder: (context, index) {
                 final mosque = _favoriteMosques[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppTheme.cardDark : AppTheme.cardLight,
-                    borderRadius: BorderRadius.circular(20),
-                    border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
-                    boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
+                return FluidScale(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppTheme.cardDark : AppTheme.cardLight,
+                      borderRadius: BorderRadius.circular(20),
+                      border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+                      boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
+                    ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       leading: Container(
@@ -470,14 +473,13 @@ class _FavoriteMosquesScreenState extends State<FavoriteMosquesScreen> {
                         child: Icon(Icons.mosque_rounded, color: AppTheme.primary, size: 24),
                       ),
                       title: Text(mosque.name, style: TextStyle(fontWeight: FontWeight.w700, color: textColor)),
-                    subtitle: Text(mosque.neighborhood, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey.shade600), maxLines: 2, overflow: TextOverflow.ellipsis),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
-                      onPressed: () => _removeFromFavorites(mosque.id),
+                      subtitle: Text(mosque.neighborhood, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey.shade600), maxLines: 2, overflow: TextOverflow.ellipsis),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.redAccent),
+                        onPressed: () => _removeFromFavorites(mosque.id),
+                      ),
                     ),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
                   ),
-                ),
                 );
               },
             ),

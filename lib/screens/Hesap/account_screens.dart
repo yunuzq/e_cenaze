@@ -346,8 +346,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(26),
+                    FluidScale(
                       onTap: _showFaqOverlay,
                       child: Ink(
                         decoration: BoxDecoration(
@@ -387,7 +386,7 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget _buildMenuItem(BuildContext context, {required IconData icon, required String text, bool isDestructive = false, bool hasNotification = false, required VoidCallback onTap}) {
     Color boxColor = isDestructive ? Colors.redAccent : AppTheme.primary;
 
-    return GestureDetector(
+    return FluidScale(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),

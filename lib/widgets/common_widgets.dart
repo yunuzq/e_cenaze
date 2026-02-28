@@ -3,6 +3,37 @@ import '../data/global_data.dart';
 import '../theme/app_theme.dart';
 import '../screens/Detay/detaylar.dart';
 
+/// Dokunma hissi: Basıldığında %97 scale, 150ms, Curves.easeOutCubic.
+class FluidScale extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+
+  const FluidScale({super.key, required this.child, this.onTap});
+
+  @override
+  State<FluidScale> createState() => _FluidScaleState();
+}
+
+class _FluidScaleState extends State<FluidScale> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        scale: _isPressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOutCubic,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 

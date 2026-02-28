@@ -122,26 +122,120 @@ class _MainScreenState extends State<MainScreen> {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey<int>(_selectedIndex),
+          child: _screens[_selectedIndex],
+        ),
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: isDark ? AppTheme.cardDark : AppTheme.cardLight,
           border: isDark ? Border(top: BorderSide(color: Colors.white12, width: 0.5)) : null,
         ),
         child: SafeArea(
-          child: BottomNavigationBar(
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Ana Sayfa'),
-              BottomNavigationBarItem(icon: Icon(Icons.mosque_rounded), label: 'Camiler'),
-              BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Hesap'),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: AppTheme.primary,
-            unselectedItemColor: Colors.grey,
+          child: _CustomBottomNav(
+            selectedIndex: _selectedIndex,
             onTap: _onItemTapped,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            type: BottomNavigationBarType.fixed,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CustomBottomNav extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onTap;
+
+  const _CustomBottomNav({required this.selectedIndex, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _NavItem(icon: Icons.home_rounded, iconOutlined: Icons.home_outlined, label: 'Ana Sayfa', index: 0, selectedIndex: selectedIndex, onTap: onTap),
+        _NavItem(icon: Icons.mosque_rounded, iconOutlined: Icons.mosque_outlined, label: 'Camiler', index: 1, selectedIndex: selectedIndex, onTap: onTap),
+        _NavItem(icon: Icons.person_rounded, iconOutlined: Icons.person_outline_rounded, label: 'Hesap', index: 2, selectedIndex: selectedIndex, onTap: onTap),
+      ],
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final IconData iconOutlined;
+  final String label;
+  final int index;
+  final int selectedIndex;
+  final ValueChanged<int> onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.iconOutlined,
+    required this.label,
+    required this.index,
+    required this.selectedIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = selectedIndex == index;
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => onTap(index),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeOutCubic,
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(
+                        scale: animation,
+                        child: child,
+                      );
+                    },
+                    child: Icon(
+                      isSelected ? icon : iconOutlined,
+                      key: ValueKey<bool>(isSelected),
+                      size: 26,
+                      color: isSelected ? AppTheme.primary : Colors.grey,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected ? AppTheme.primary : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../models/app_models.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 import '../Detay/detaylar.dart';
 
 // --- GLOBAL İZİN DEĞİŞKENİ (Hafızada tutulur) ---
@@ -204,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Row(
                   children: [
-                    GestureDetector(
+                    FluidScale(
                       onTap: () {
                         if (!globalLocationPermissionGranted) {
                           _askLocationPermission();
@@ -248,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 18,
                             decoration: const BoxDecoration(
                               color: Colors.redAccent,
-                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                             ),
                             child: Center(
                               child: Text(year, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10)),
@@ -297,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: _people.length,
                     itemBuilder: (context, index) {
                       final person = _people[index];
-                      return _PersonCard(person: person);
+                      return _StaggeredCard(index: index, child: _PersonCard(person: person));
                     },
                   ),
                   
@@ -312,7 +313,59 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// --- VEFAT EDEN KİŞİ KARTI (Tint Avatar, InkWell, Mat) ---
+// --- STAGGERED YÜKLEME (FadeIn + 10px Slide, 400ms, easeOutQuart) ---
+class _StaggeredCard extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const _StaggeredCard({required this.index, required this.child});
+
+  @override
+  State<_StaggeredCard> createState() => _StaggeredCardState();
+}
+
+class _StaggeredCardState extends State<_StaggeredCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fade;
+  late Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _fade = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart),
+    );
+    _slide = Tween<Offset>(begin: const Offset(0, 0.03), end: Offset.zero).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart),
+    );
+    Future.delayed(Duration(milliseconds: widget.index * 50), () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(
+        position: _slide,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+// --- VEFAT EDEN KİŞİ KARTI (FluidScale, ripple yok) ---
 class _PersonCard extends StatelessWidget {
   final Person person;
   const _PersonCard({required this.person});
@@ -324,20 +377,17 @@ class _PersonCard extends StatelessWidget {
     Color textColor = isDark ? Colors.white : AppTheme.textLight;
     Color subTextColor = isDark ? Colors.grey[400]! : Colors.grey.shade600;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(20),
-        border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person))),
+    return FluidScale(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person))),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: cardColor,
           borderRadius: BorderRadius.circular(20),
-          child: Padding(
+          border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+          boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
+        ),
+        child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
@@ -368,23 +418,18 @@ class _PersonCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Material(
-                  color: AppTheme.primary,
-                  borderRadius: BorderRadius.circular(20),
-                  child: InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person))),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  constraints: const BoxConstraints(minHeight: 48),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primary,
                     borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      constraints: const BoxConstraints(minHeight: 48),
-                      alignment: Alignment.center,
-                      child: const Text('Detay', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
-                    ),
                   ),
+                  alignment: Alignment.center,
+                  child: const Text('Detay', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
                 ),
               ],
             ),
-          ),
         ),
       ),
     );
