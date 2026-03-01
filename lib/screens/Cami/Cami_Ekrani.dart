@@ -19,6 +19,9 @@ class _MosquesScreenState extends State<MosquesScreen> {
   final MapController _mapController = MapController();
   final LatLng _initialCenter = const LatLng(41.0082, 28.9784); // İstanbul
 
+  // Lazy: Tüm ağır içerik geçiş animasyonu bittikten sonra yükle (donma önleme)
+  bool _contentLoaded = false;
+
   // FİLTRE DEĞİŞKENLERİ
   String? _selectedCity;
   String? _selectedDistrict;
@@ -53,8 +56,13 @@ class _MosquesScreenState extends State<MosquesScreen> {
   @override
   void initState() {
     super.initState();
-    _displayedMosques = GlobalData.mosques;
-    _createMosqueMarkers();
+    Future.delayed(const Duration(milliseconds: 550), () {
+      if (mounted) {
+        _displayedMosques = GlobalData.mosques;
+        _createMosqueMarkers();
+        setState(() => _contentLoaded = true);
+      }
+    });
   }
 
   void _createMosqueMarkers() {
@@ -137,14 +145,40 @@ class _MosquesScreenState extends State<MosquesScreen> {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    List<String> cities = GlobalData.turkeyLocationData.keys.toList()..sort();
     
-    // Panel renkleri
+    if (!_contentLoaded) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Camiler ve Harita", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+          backgroundColor: AppTheme.primary,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+        ),
+        body: Container(
+          color: isDark ? AppTheme.bgDark : AppTheme.bgLight,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(color: AppTheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  'Yükleniyor...',
+                  style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    List<String> cities = GlobalData.turkeyLocationData.keys.toList()..sort();
     Color sheetColor = isDark ? AppTheme.cardDark : AppTheme.cardLight;
     Color textColor = isDark ? Colors.white : Colors.black87;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Klavye açılınca harita sıkışmasın
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Camiler ve Harita", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
         backgroundColor: AppTheme.primary,
@@ -209,26 +243,25 @@ class _MosquesScreenState extends State<MosquesScreen> {
                 ),
               ),
               
-              // HARİTA (Geri kalan tüm alanı kaplasın)
+              // HARİTA
               Expanded(
                 child: FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    initialCenter: _initialCenter,
-                    initialZoom: 9.0,
-                    // Tüm temel etkileşimler açık, sadece rotate kapalı
-                    interactionOptions: const InteractionOptions(
-                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                    ),
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.ecenaze.app',
-                    ),
-                    MarkerLayer(markers: _markers),
-                  ],
-                ),
+                        mapController: _mapController,
+                        options: MapOptions(
+                          initialCenter: _initialCenter,
+                          initialZoom: 9.0,
+                          interactionOptions: const InteractionOptions(
+                            flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                          ),
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.ecenaze.app',
+                          ),
+                          MarkerLayer(markers: _markers),
+                        ],
+                      ),
               ),
             ],
           ),
