@@ -64,6 +64,7 @@ class MosqueDetailScreen extends StatelessWidget {
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(title: Text(mosque.name), backgroundColor: Colors.transparent),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             Container(height: 250, width: double.infinity, color: Colors.grey[800], child: const Icon(Icons.image, size: 100)),

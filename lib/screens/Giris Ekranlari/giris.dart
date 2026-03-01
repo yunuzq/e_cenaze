@@ -133,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Center(
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

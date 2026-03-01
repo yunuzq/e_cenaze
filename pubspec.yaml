@@ -39,6 +39,7 @@ dependencies:
   flutter_map: ^6.0.0
   latlong2: ^0.9.0
   google_fonts: ^6.2.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
 

@@ -288,7 +288,8 @@ class _MosquesScreenState extends State<MosquesScreen> {
                   ],
                 ),
                 child: ListView(
-                  controller: scrollController, // Panel ile listenin senkron kayması için
+                  controller: scrollController,
+                  physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.zero,
                   children: [
                     // GRİ TUTAMAÇ ÇİZGİSİ (Kullanıcı çekebileceğini anlasın)
@@ -342,9 +343,9 @@ class _MosquesScreenState extends State<MosquesScreen> {
                             child: Center(child: Text("Cami bulunamadı.", style: TextStyle(color: textColor.withOpacity(0.6)))),
                           )
                         : ListView.builder(
-                            controller: scrollController, // İç liste scroll kontrolü
-                            shrinkWrap: true, // İç içe liste hatasını önler
-                            physics: const ClampingScrollPhysics(), // Kaydırma fiziği
+                            controller: scrollController,
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemCount: _displayedMosques.length,
                             itemBuilder: (context, index) {
@@ -483,6 +484,7 @@ class _FavoriteMosquesScreenState extends State<FavoriteMosquesScreen> {
       body: _favoriteMosques.isEmpty
           ? Center(child: Text("Henüz favori cami eklemediniz.", style: TextStyle(color: textColor.withOpacity(0.6))))
           : ListView.builder(
+              physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(12),
               itemCount: _favoriteMosques.length,
               itemBuilder: (context, index) {

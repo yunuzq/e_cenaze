@@ -15,6 +15,7 @@ class MosqueDetailScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             // Cami Resmi (Placeholder veya URL)

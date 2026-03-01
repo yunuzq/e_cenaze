@@ -120,6 +120,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
+                    physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     children: [
                       Card(
@@ -234,7 +235,8 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             const SizedBox(height: 32),
@@ -541,6 +543,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               ],
             ),
             content: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -622,6 +625,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("Kullanıcı Bilgileri")),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
@@ -762,6 +766,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("Ayarlar")),
       body: ListView(
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         children: [
           Padding(
@@ -838,6 +843,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
         )
       : ListView.separated(
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: GlobalData.notifications.length,
         separatorBuilder: (context, index) => const SizedBox(height: 12),

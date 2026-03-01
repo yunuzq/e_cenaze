@@ -25,6 +25,7 @@ class ECenazeApp extends StatelessWidget {
           darkTheme: _buildDarkTheme(),
           theme: _buildLightTheme(),
           themeMode: currentMode,
+          scrollBehavior: const _BouncingScrollBehavior(),
           home: const LoginPage(),
         );
       },
@@ -134,6 +135,15 @@ class ECenazeApp extends StatelessWidget {
       ),
       useMaterial3: true,
     );
+  }
+}
+
+class _BouncingScrollBehavior extends ScrollBehavior {
+  const _BouncingScrollBehavior();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const BouncingScrollPhysics();
   }
 }
 

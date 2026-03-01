@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../models/app_models.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common_widgets.dart';
@@ -16,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoading = true;
+
   // --- KONUM VE SAYAÇ DEĞİŞKENLERİ ---
   Timer? _timer;
   String _nextPrayerName = "HESAPLANIYOR";
@@ -34,7 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    
+    Future.delayed(const Duration(milliseconds: 250), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
     if (!globalLocationPermissionGranted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _askLocationPermission();
@@ -282,6 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // --- İÇERİK KISMI ---
           Expanded(
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -291,16 +297,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text("Bugünkü Vefatlar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textColor)),
                   ),
                   
-                  ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _people.length,
-                    itemBuilder: (context, index) {
-                      final person = _people[index];
-                      return _StaggeredCard(index: index, child: _PersonCard(person: person));
-                    },
-                  ),
+                  _isLoading
+                      ? ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 6,
+                          itemBuilder: (context, index) => _PersonCardSkeleton(isDark: isDark),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _people.length,
+                          itemBuilder: (context, index) {
+                            final person = _people[index];
+                            return _StaggeredCard(index: index, child: _PersonCard(person: person));
+                          },
+                        ),
                   
                   const SizedBox(height: 20),
                 ],
@@ -308,6 +322,91 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// --- İSKELET KART (Shimmer - PersonCard ile aynı boyut) ---
+class _PersonCardSkeleton extends StatelessWidget {
+  final bool isDark;
+
+  const _PersonCardSkeleton({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = isDark ? Colors.white10 : Colors.grey[300]!;
+    final highlightColor = isDark
+        ? AppTheme.primary.withValues(alpha: 0.15)
+        : AppTheme.primary.withValues(alpha: 0.2);
+
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      direction: ShimmerDirection.ltr,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: baseColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: baseColor,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 16,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: baseColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 12,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        color: baseColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      height: 12,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: baseColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: 88,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: baseColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
