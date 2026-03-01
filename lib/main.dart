@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'data/global_data.dart';
 import 'theme/app_theme.dart';
 import 'screens/Giris Ekranlari/giris.dart';
@@ -31,7 +32,9 @@ class ECenazeApp extends StatelessWidget {
   }
 
   ThemeData _buildDarkTheme() {
+    final baseTextTheme = GoogleFonts.interTextTheme(ThemeData.dark().textTheme);
     return ThemeData(
+      fontFamily: GoogleFonts.inter().fontFamily,
       brightness: Brightness.dark,
       primaryColor: AppTheme.primary,
       scaffoldBackgroundColor: AppTheme.bgDark,
@@ -39,6 +42,23 @@ class ECenazeApp extends StatelessWidget {
         primary: AppTheme.primary,
         secondary: AppTheme.primary,
         surface: AppTheme.cardDark,
+      ),
+      textTheme: baseTextTheme.copyWith(
+        displayLarge: baseTextTheme.displayLarge?.copyWith(fontWeight: FontWeight.w700),
+        displayMedium: baseTextTheme.displayMedium?.copyWith(fontWeight: FontWeight.w700),
+        displaySmall: baseTextTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700),
+        headlineLarge: baseTextTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
+        headlineMedium: baseTextTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+        headlineSmall: baseTextTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+        titleLarge: baseTextTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        titleMedium: baseTextTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        titleSmall: baseTextTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        bodyLarge: baseTextTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
+        bodyMedium: baseTextTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400),
+        bodySmall: baseTextTheme.bodySmall?.copyWith(fontWeight: FontWeight.w400),
+        labelLarge: baseTextTheme.labelLarge?.copyWith(fontWeight: FontWeight.w400),
+        labelMedium: baseTextTheme.labelMedium?.copyWith(fontWeight: FontWeight.w400),
+        labelSmall: baseTextTheme.labelSmall?.copyWith(fontWeight: FontWeight.w400),
       ),
       cardTheme: CardThemeData(
         color: AppTheme.cardDark,
@@ -53,18 +73,20 @@ class ECenazeApp extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
-        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: GoogleFonts.inter(textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
       ),
       useMaterial3: true,
     );
   }
 
   ThemeData _buildLightTheme() {
+    final baseTextTheme = GoogleFonts.interTextTheme(ThemeData.light().textTheme);
     return ThemeData(
+      fontFamily: GoogleFonts.inter().fontFamily,
       brightness: Brightness.light,
       primaryColor: AppTheme.primary,
       scaffoldBackgroundColor: AppTheme.bgLight,
@@ -73,6 +95,23 @@ class ECenazeApp extends StatelessWidget {
         secondary: AppTheme.primary,
         surface: AppTheme.cardLight,
         onSurface: AppTheme.textLight,
+      ),
+      textTheme: baseTextTheme.copyWith(
+        displayLarge: baseTextTheme.displayLarge?.copyWith(fontWeight: FontWeight.w700),
+        displayMedium: baseTextTheme.displayMedium?.copyWith(fontWeight: FontWeight.w700),
+        displaySmall: baseTextTheme.displaySmall?.copyWith(fontWeight: FontWeight.w700),
+        headlineLarge: baseTextTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
+        headlineMedium: baseTextTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+        headlineSmall: baseTextTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+        titleLarge: baseTextTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        titleMedium: baseTextTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        titleSmall: baseTextTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        bodyLarge: baseTextTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
+        bodyMedium: baseTextTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400),
+        bodySmall: baseTextTheme.bodySmall?.copyWith(fontWeight: FontWeight.w400),
+        labelLarge: baseTextTheme.labelLarge?.copyWith(fontWeight: FontWeight.w400),
+        labelMedium: baseTextTheme.labelMedium?.copyWith(fontWeight: FontWeight.w400),
+        labelSmall: baseTextTheme.labelSmall?.copyWith(fontWeight: FontWeight.w400),
       ),
       cardTheme: CardThemeData(
         color: AppTheme.cardLight,
@@ -87,11 +126,11 @@ class ECenazeApp extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppTheme.textLight),
-        titleTextStyle: TextStyle(color: AppTheme.textLight, fontSize: 20, fontWeight: FontWeight.w700),
+        iconTheme: const IconThemeData(color: AppTheme.textLight),
+        titleTextStyle: GoogleFonts.inter(textStyle: TextStyle(color: AppTheme.textLight, fontSize: 20, fontWeight: FontWeight.w700)),
       ),
       useMaterial3: true,
     );
