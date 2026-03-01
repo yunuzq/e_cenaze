@@ -107,6 +107,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  int _previousIndex = 0;
 
   // Sayfalar Listesi
   final List<Widget> _screens = [
@@ -115,21 +116,34 @@ class _MainScreenState extends State<MainScreen> {
     const AccountScreen()    // Hesap
   ];
 
-  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
+  void _onItemTapped(int index) {
+    setState(() {
+      _previousIndex = _selectedIndex;
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final goingRight = _selectedIndex > _previousIndex;
+    final slideOffset = goingRight ? 0.05 : -0.05;
 
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeInOut,
-        switchOutCurve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 500),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(
             opacity: animation,
-            child: child,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: Offset(slideOffset, 0),
+                end: Offset.zero,
+              ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+              child: child,
+            ),
           );
         },
         child: KeyedSubtree(
@@ -204,26 +218,10 @@ class _NavItem extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    switchInCurve: Curves.easeOutCubic,
-                    switchOutCurve: Curves.easeOutCubic,
-                    transitionBuilder: (Widget child, Animation<double> animation) {
-                      return ScaleTransition(
-                        scale: animation,
-                        child: child,
-                      );
-                    },
-                    child: Icon(
-                      isSelected ? icon : iconOutlined,
-                      key: ValueKey<bool>(isSelected),
-                      size: 26,
-                      color: isSelected ? AppTheme.primary : Colors.grey,
-                    ),
-                  ),
+                Icon(
+                  isSelected ? icon : iconOutlined,
+                  size: 26,
+                  color: isSelected ? AppTheme.primary : Colors.grey,
                 ),
                 const SizedBox(height: 4),
                 Text(
