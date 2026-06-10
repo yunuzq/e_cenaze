@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 250), () {
+    Future.delayed(const Duration(milliseconds: 190), () {
       if (mounted) setState(() => _isLoading = false);
     });
     if (!globalLocationPermissionGranted) {
