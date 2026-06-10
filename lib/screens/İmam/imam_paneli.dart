@@ -1,7 +1,11 @@
+// ============================================================================
+// DOSYA: imam_panel_screen.dart
+// AÇIKLAMA: İmamların sisteme yeni vefat ilanı girdiği yönetim paneli sayfası.
+// ============================================================================
+
 import 'package:flutter/material.dart';
 import '../../data/global_data.dart';
 import '../../models/app_models.dart';
-import '../Giris Ekranlari/giris.dart'; // Giriş sayfasına dönüş için doğru import
 
 class ImamPanelScreen extends StatefulWidget {
   const ImamPanelScreen({super.key});
@@ -11,6 +15,10 @@ class ImamPanelScreen extends StatefulWidget {
 }
 
 class _ImamPanelScreenState extends State<ImamPanelScreen> {
+  // ---------------------------------------------------------------------------
+  // KULLANICI GİRİŞ KONTROLLERİ VE DEĞİŞKENLER
+  // ---------------------------------------------------------------------------
+  
   final TextEditingController _nameController = TextEditingController();
 
   String? _selectedCity;
@@ -18,23 +26,16 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
   String? _selectedNeighborhood;
   String? _selectedMosque;
   String? _selectedBurialPlace;
-  String _selectedPrayerTime = "Öğle Namazı";
 
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = const TimeOfDay(hour: 12, minute: 0);
+  // Tarih ve saat değişkenleri
+  DateTime _selectedDate = DateTime.now(); // Vefat Tarihi
+  DateTime _selectedFuneralDate = DateTime.now(); // Yeni Eklendi: Cenaze Tarihi
+  TimeOfDay _selectedTime = const TimeOfDay(hour: 12, minute: 0); // Cenaze Saati
 
   List<String> _districts = [];
   List<String> _neighborhoods = [];
   List<String> _availableMosques = [];
 
-  final List<String> _prayerTimes = [
-    "Öğle Namazı",
-    "İkindi Namazı",
-    "Cuma Namazı",
-    "Cenaze Namazı",
-  ];
-
-  // Mezarlıkları alfabetik sıralayalım
   final List<String> _cemeteries = [
     'Edirnekapı Şehitliği',
     'Emirsultan Mezarlığı',
@@ -51,47 +52,108 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
     super.dispose();
   }
 
+  // ---------------------------------------------------------------------------
+  // YARDIMCI FONKSİYONLAR (TARİH VE SAAT SEÇİCİLER)
+  // ---------------------------------------------------------------------------
+
+  /// Vefat Tarihi Seçici
   Future<void> _pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2026),
+      firstDate: DateTime(2000), 
+      lastDate: DateTime(2030),  
       builder: (context, child) {
+        // Klavyede beyaz yazı sorununu çözmek için ThemeData.light() ile sarmaladık
         return Theme(
-          data: Theme.of(context).copyWith(
+          data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1E7228), // Takvim başlığı yeşil
+              primary: Color(0xFF1E7228), 
               onPrimary: Colors.white,
-              onSurface: Colors.black,
+              onSurface: Colors.black, // Takvimdeki genel yazılar
+            ),
+            // Klavyeyle giriş (manual entry) yaparken metnin siyah olması için:
+            textTheme: const TextTheme(
+              titleMedium: TextStyle(color: Colors.black, fontSize: 16), 
+              bodyLarge: TextStyle(color: Colors.black),
+            ),
+            inputDecorationTheme: const InputDecorationTheme(
+              labelStyle: TextStyle(color: Colors.black87),
+              hintStyle: TextStyle(color: Colors.black54),
             ),
           ),
           child: child!,
         );
       },
     );
-    if (picked != null) setState(() => _selectedDate = picked);
+    if (picked != null) {
+      setState(() => _selectedDate = picked);
+    }
   }
 
+  /// Cenaze Tarihi Seçici (Yeni Eklendi)
+  Future<void> _pickFuneralDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedFuneralDate,
+      firstDate: DateTime(2000), 
+      lastDate: DateTime(2030),  
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF1E7228), 
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textTheme: const TextTheme(
+              titleMedium: TextStyle(color: Colors.black, fontSize: 16), 
+              bodyLarge: TextStyle(color: Colors.black),
+            ),
+            inputDecorationTheme: const InputDecorationTheme(
+              labelStyle: TextStyle(color: Colors.black87),
+              hintStyle: TextStyle(color: Colors.black54),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() => _selectedFuneralDate = picked);
+    }
+  }
+
+  /// Cenaze Saati Seçici
   Future<void> _pickTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime,
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
+          data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
               primary: Color(0xFF1E7228),
               onPrimary: Colors.white,
               onSurface: Colors.black,
+            ),
+            textTheme: const TextTheme(
+              titleMedium: TextStyle(color: Colors.black, fontSize: 16),
+              bodyLarge: TextStyle(color: Colors.black),
             ),
           ),
           child: child!,
         );
       },
     );
-    if (picked != null) setState(() => _selectedTime = picked);
+    if (picked != null) {
+      setState(() => _selectedTime = picked);
+    }
   }
+
+  // ---------------------------------------------------------------------------
+  // DEĞİŞİM DİNLEYİCİLERİ
+  // ---------------------------------------------------------------------------
 
   void _onCityChanged(String? val) {
     setState(() {
@@ -100,10 +162,9 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
       _selectedNeighborhood = null;
       _selectedMosque = null;
 
-      // Şehir değişince ilçeleri getir ve ALFABETİK SIRALA
       if (val != null) {
         _districts = GlobalData.turkeyLocationData[val]!.keys.toList();
-        _districts.sort((a, b) => a.compareTo(b)); // A-Z Sıralama
+        _districts.sort((a, b) => a.compareTo(b));
       } else {
         _districts = [];
       }
@@ -120,10 +181,9 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
       _selectedMosque = null;
 
       if (_selectedCity != null && val != null) {
-        // Mahalleleri getir ve ALFABETİK SIRALA
         _neighborhoods =
             GlobalData.turkeyLocationData[_selectedCity]![val] ?? [];
-        _neighborhoods.sort((a, b) => a.compareTo(b)); // A-Z Sıralama
+        _neighborhoods.sort((a, b) => a.compareTo(b)); 
         _updateAvailableMosques();
       } else {
         _neighborhoods = [];
@@ -133,19 +193,21 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
   }
 
   void _updateAvailableMosques() {
-    // Camileri filtrele ve ALFABETİK SIRALA
     _availableMosques = GlobalData.mosques
-        .where(
-          (m) => m.city == _selectedCity && m.district == _selectedDistrict,
-        )
+        .where((m) => m.city == _selectedCity && m.district == _selectedDistrict)
         .map((m) => m.name)
         .toList();
 
-    _availableMosques.sort((a, b) => a.compareTo(b)); // A-Z Sıralama
+    _availableMosques.sort((a, b) => a.compareTo(b)); 
 
-    if (_availableMosques.isEmpty)
+    if (_availableMosques.isEmpty) {
       _availableMosques.add("Merkez Camii (Varsayılan)");
+    }
   }
+
+  // ---------------------------------------------------------------------------
+  // VERİ KAYDETME
+  // ---------------------------------------------------------------------------
 
   void _saveFuneral() {
     if (_nameController.text.isEmpty ||
@@ -155,43 +217,41 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
         _selectedBurialPlace == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Lütfen tüm alanları seçiniz."),
+          content: Text("Lütfen tüm zorunlu alanları eksiksiz doldurunuz."),
           backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
         ),
       );
-      return;
+      return; 
     }
 
-    String formattedDate =
-        "${_selectedDate.day} ${_selectedDate.month} ${_selectedDate.year}";
-    String formattedTime =
-        "${_selectedTime.hour}:${_selectedTime.minute.toString().padLeft(2, '0')}";
+    String formattedDate = "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}";
+    String formattedFuneralDate = "${_selectedFuneralDate.day}/${_selectedFuneralDate.month}/${_selectedFuneralDate.year}";
+    String formattedTime = "${_selectedTime.hour}:${_selectedTime.minute.toString().padLeft(2, '0')}";
 
     final newPerson = Person(
       name: _nameController.text.toUpperCase(),
-      date: formattedDate,
-      time: "Belirtilmedi",
-      funeralTime: formattedTime,
-      prayerInfo: '($_selectedPrayerTime)',
+      date: formattedDate, // Vefat Tarihi
+      time: formattedFuneralDate, // Cenaze Tarihi ('time' parametresine yazdırıyoruz)
+      funeralTime: formattedTime, // Cenaze Saati
+      prayerInfo: '', 
       mosqueName: _selectedMosque!,
       city: _selectedCity!,
       burialPlace: _selectedBurialPlace!,
     );
 
     GlobalData.addPerson(newPerson).then((_) {
-      if (!mounted) return; // 👈 Güvenlik kontrolü
+      if (!mounted) return; 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Vefat ilanı sisteme kaydedildi!"),
+          content: Text("✅ Vefat ilanı sisteme başarıyla kaydedildi!"),
           backgroundColor: Color(0xFF1E7228),
+          behavior: SnackBarBehavior.floating,
         ),
       );
     });
 
-    // Eğer cami daha önce yoksa listeye ekle (Basit mantık)
-    bool mosqueExists = GlobalData.mosques.any(
-      (m) => m.name == _selectedMosque,
-    );
+    bool mosqueExists = GlobalData.mosques.any((m) => m.name == _selectedMosque);
     if (!mosqueExists) {
       final newMosque = Mosque(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -199,80 +259,72 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
         city: _selectedCity!,
         district: _selectedDistrict!,
         neighborhood: _selectedNeighborhood ?? "Merkez",
-        history: "İmam tarafından eklendi.",
+        history: "İmam yönetim paneli tarafından otomatik eklendi.",
         imageUrls: [],
       );
       GlobalData.addMosque(newMosque);
     }
 
-    // Formu temizle
     _nameController.clear();
     setState(() {
       _selectedMosque = null;
       _selectedBurialPlace = null;
-      _selectedPrayerTime = "Öğle Namazı";
     });
   }
 
-  void _logout() {
-    // Çıkış yapınca Login ekranına at
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-    );
-  }
-
+  // ---------------------------------------------------------------------------
+  // ARAYÜZ OLUŞTURMA
+  // ---------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    // Tema renklerini al
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color bgColor = isDark ? Colors.black : Colors.white;
     Color cardColor = isDark ? Colors.grey[900]! : Colors.grey[100]!;
     Color textColor = isDark ? Colors.white : Colors.black87;
-    Color iconColor = const Color(0xFF1E7228); // Bizim özel yeşil
+    Color iconColor = const Color(0xFF1E7228); 
 
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
         title: Text(
           "İmam Yönetim Paneli",
-          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: textColor, 
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5, 
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: _logout,
-            icon: const Icon(Icons.logout, color: Colors.redAccent),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Column(
           children: [
-            const Icon(Icons.mosque, size: 60, color: Color(0xFF1E7228)),
-            const SizedBox(height: 10),
+            const Icon(Icons.mosque, size: 64, color: Color(0xFF1E7228)),
+            const SizedBox(height: 12),
             Text(
               "Yeni Vefat İlanı Girişi",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: iconColor,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            // İsim Girişi
+            // 1. İsim Girişi
             TextField(
               controller: _nameController,
               style: TextStyle(color: textColor),
+              textCapitalization: TextCapitalization.words, 
               decoration: InputDecoration(
                 labelText: "Vefat Edenin Adı Soyadı",
                 labelStyle: TextStyle(
                   color: isDark ? Colors.white70 : Colors.black54,
-                ), // withOpacity yerine sabit renk
+                ), 
                 prefixIcon: Icon(Icons.person, color: iconColor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -284,22 +336,46 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
 
             const SizedBox(height: 16),
 
-            // Tarih ve Saat Seçimi
+            // 2. Vefat Tarihi (Üstte, tam genişlikte)
+            InkWell(
+              onTap: () => _pickDate(context),
+              borderRadius: BorderRadius.circular(12),
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: "Vefat Tarihi",
+                  labelStyle: TextStyle(
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                  prefixIcon: Icon(Icons.calendar_today, color: iconColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: cardColor,
+                ),
+                child: Text(
+                  "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}",
+                  style: TextStyle(color: textColor, fontSize: 16),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 3. Cenaze Tarihi ve Cenaze Saati (Yan yana)
             Row(
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: () => _pickDate(context),
+                    onTap: () => _pickFuneralDate(context),
+                    borderRadius: BorderRadius.circular(12),
                     child: InputDecorator(
                       decoration: InputDecoration(
-                        labelText: "Vefat Tarihi",
+                        labelText: "Cenaze Tarihi",
                         labelStyle: TextStyle(
                           color: isDark ? Colors.white70 : Colors.black54,
                         ),
-                        prefixIcon: Icon(
-                          Icons.calendar_today,
-                          color: iconColor,
-                        ),
+                        prefixIcon: Icon(Icons.event, color: iconColor), // Farklı bir takvim ikonu
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -307,16 +383,17 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
                         fillColor: cardColor,
                       ),
                       child: Text(
-                        "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}",
-                        style: TextStyle(color: textColor),
+                        "${_selectedFuneralDate.day}/${_selectedFuneralDate.month}/${_selectedFuneralDate.year}",
+                        style: TextStyle(color: textColor, fontSize: 16),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(
                   child: InkWell(
                     onTap: () => _pickTime(context),
+                    borderRadius: BorderRadius.circular(12),
                     child: InputDecorator(
                       decoration: InputDecoration(
                         labelText: "Cenaze Saati",
@@ -332,7 +409,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
                       ),
                       child: Text(
                         "${_selectedTime.hour}:${_selectedTime.minute.toString().padLeft(2, '0')}",
-                        style: TextStyle(color: textColor),
+                        style: TextStyle(color: textColor, fontSize: 16),
                       ),
                     ),
                   ),
@@ -342,7 +419,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
 
             const SizedBox(height: 16),
 
-            // İl ve İlçe
+            // 4. İl ve İlçe Seçimi 
             Row(
               children: [
                 Expanded(
@@ -350,12 +427,12 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
                     context,
                     label: "İl",
                     value: _selectedCity,
-                    items: GlobalData.turkeyLocationData.keys.toList()
-                      ..sort((a, b) => a.compareTo(b)),
+                    items: GlobalData.turkeyLocationData.keys.toList()..sort((a, b) => a.compareTo(b)),
                     onChanged: _onCityChanged,
+                    icon: Icons.location_city,
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(
                   child: _buildDropdown(
                     context,
@@ -363,6 +440,7 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
                     value: _selectedDistrict,
                     items: _districts,
                     onChanged: _onDistrictChanged,
+                    icon: Icons.location_on_outlined,
                   ),
                 ),
               ],
@@ -370,80 +448,64 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
 
             const SizedBox(height: 16),
 
-            // Mahalle ve Namaz Vakti
-            Row(
-              children: [
-                Expanded(
-                  child: _buildDropdown(
-                    context,
-                    label: "Mahalle",
-                    value: _selectedNeighborhood,
-                    items: _neighborhoods,
-                    onChanged: (val) =>
-                        setState(() => _selectedNeighborhood = val),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _buildDropdown(
-                    context,
-                    label: "Namaz Vakti",
-                    value: _selectedPrayerTime,
-                    items: _prayerTimes,
-                    onChanged: (val) =>
-                        setState(() => _selectedPrayerTime = val!),
-                  ),
-                ),
-              ],
+            // 5. Mahalle Seçimi
+            _buildDropdown(
+              context,
+              label: "Mahalle",
+              value: _selectedNeighborhood,
+              items: _neighborhoods,
+              onChanged: (val) => setState(() => _selectedNeighborhood = val),
+              icon: Icons.map,
             ),
 
             const SizedBox(height: 16),
 
-            // Cami Seçimi
+            // 6. Cami Seçimi
             _buildDropdown(
               context,
               label: "Cami Seçiniz",
               value: _selectedMosque,
               items: _availableMosques,
               onChanged: (val) => setState(() => _selectedMosque = val),
-              icon: Icons.mosque,
+              icon: Icons.mosque_outlined,
             ),
 
             const SizedBox(height: 16),
 
-            // Mezarlık Seçimi
+            // 7. Defin Yeri Seçimi
             _buildDropdown(
               context,
               label: "Defin Yeri (Mezarlık)",
               value: _selectedBurialPlace,
               items: _cemeteries,
               onChanged: (val) => setState(() => _selectedBurialPlace = val),
-              icon: Icons.place,
+              icon: Icons.park,
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 32),
 
-            // Kaydet Butonu
+            // 8. Kaydet Butonu
             SizedBox(
               width: double.infinity,
-              height: 55,
+              height: 56,
               child: ElevatedButton.icon(
                 onPressed: _saveFuneral,
-                icon: const Icon(Icons.save),
+                icon: const Icon(Icons.save_alt, size: 24),
                 label: const Text(
                   "İlanı Yayınla ve Kaydet",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E7228), // Bizim Yeşil
+                  backgroundColor: const Color(0xFF1E7228), 
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(16), 
                   ),
-                  elevation: 5,
+                  elevation: 4, 
                 ),
               ),
             ),
+            const SizedBox(height: 30), 
           ],
         ),
       ),
@@ -462,37 +524,31 @@ class _ImamPanelScreenState extends State<ImamPanelScreen> {
     Color cardColor = isDark ? Colors.grey[900]! : Colors.grey[100]!;
     Color textColor = isDark ? Colors.white : Colors.black87;
     Color dropdownBg = isDark ? Colors.grey[850]! : Colors.white;
-
-    // --- BURASI DÜZELTİLDİ: withOpacity YERİNE SABİT RENK ---
     Color labelColor = isDark ? Colors.white70 : Colors.black54;
 
     return DropdownButtonFormField<String>(
       value: value,
-      isExpanded: true,
+      isExpanded: true, 
       dropdownColor: dropdownBg,
       style: TextStyle(color: textColor, fontSize: 16),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: labelColor), // Hata veren yer çözüldü
-        prefixIcon: icon != null
-            ? Icon(icon, color: const Color(0xFF1E7228))
-            : null,
+        labelStyle: TextStyle(color: labelColor), 
+        prefixIcon: icon != null ? Icon(icon, color: const Color(0xFF1E7228)) : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true,
         fillColor: cardColor,
       ),
-      items: items
-          .map(
-            (String item) => DropdownMenuItem<String>(
-              value: item,
-              child: Text(
-                item,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: textColor),
-              ),
-            ),
-          )
-          .toList(),
+      items: items.map((String item) {
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(
+            item,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: textColor),
+          ),
+        );
+      }).toList(),
       onChanged: onChanged,
     );
   }

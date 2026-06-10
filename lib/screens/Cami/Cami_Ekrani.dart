@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart'; 
-import 'package:latlong2/latlong.dart'; 
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../../data/global_data.dart';
 import '../../models/app_models.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
 import 'Cami_Detaylari.dart';
 
 class MosquesScreen extends StatefulWidget {
@@ -16,6 +18,9 @@ class _MosquesScreenState extends State<MosquesScreen> {
   // HARİTA AYARLARI
   final MapController _mapController = MapController();
   final LatLng _initialCenter = const LatLng(41.0082, 28.9784); // İstanbul
+
+  // Lazy: Tüm ağır içerik geçiş animasyonu bittikten sonra yükle (donma önleme)
+  bool _contentLoaded = false;
 
   // FİLTRE DEĞİŞKENLERİ
   String? _selectedCity;
@@ -35,13 +40,29 @@ class _MosquesScreenState extends State<MosquesScreen> {
     "Süleymaniye Camii": const LatLng(41.0162, 28.9638),
     "Çoban Mustafa Paşa Cami": const LatLng(40.8026, 29.4308),
     "Bursa Ulu Cami": const LatLng(40.1826, 29.0630),
+    // Yeni eklenen camiler
+    "Selimiye Camii": const LatLng(41.6771, 26.5558),
+    "Sultanahmet Camii": const LatLng(41.0054, 28.9768),
+    "Fatih Camii": const LatLng(41.0190, 28.9497),
+    "Hacı Bayram-ı Veli Camii": const LatLng(39.9439, 32.8560),
+    "Konak Yalı Camii": const LatLng(38.4192, 27.1287),
+    "Sabancı Merkez Camii": const LatLng(37.0022, 35.3289),
+    "Melike Hatun Camii": const LatLng(39.9304, 32.8555),
+    "Muradiye Camii": const LatLng(40.1910, 29.0473),
+    "İplikçi (Mevlana) Camii": const LatLng(37.8724, 32.4988),
+    "Diyarbakır Ulu Cami": const LatLng(37.9137, 40.2362),
   };
 
   @override
   void initState() {
     super.initState();
-    _displayedMosques = GlobalData.mosques;
-    _createMosqueMarkers();
+    Future.delayed(const Duration(milliseconds: 550), () {
+      if (mounted) {
+        _displayedMosques = GlobalData.mosques;
+        _createMosqueMarkers();
+        setState(() => _contentLoaded = true);
+      }
+    });
   }
 
   void _createMosqueMarkers() {
@@ -60,8 +81,8 @@ class _MosquesScreenState extends State<MosquesScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white, 
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: const Color(0xFF1E7228), width: 1),
-                  boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 1))],
+                  border: Border.all(color: AppTheme.primary, width: 1),
+                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 1, offset: Offset(0, 1))],
                 ),
                 child: Text(
                   name, 
@@ -69,7 +90,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Icon(Icons.location_on, color: Color(0xFF1E7228), size: 40, shadows: [Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2))]),
+              Icon(Icons.location_on_rounded, color: AppTheme.primary, size: 36),
             ],
           ),
         ),
@@ -106,7 +127,7 @@ class _MosquesScreenState extends State<MosquesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Favorilerden çıkarıldı.")));
       } else {
         GlobalData.favoriteMosqueIds.add(mosqueId);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Favorilere eklendi!"), backgroundColor: Color(0xFF1E7228)));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Favorilere eklendi!"), backgroundColor: AppTheme.primary));
       }
       GlobalData.saveFavorites(); 
     });
@@ -124,17 +145,43 @@ class _MosquesScreenState extends State<MosquesScreen> {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    List<String> cities = GlobalData.turkeyLocationData.keys.toList()..sort();
     
-    // Panel renkleri
-    Color sheetColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    if (!_contentLoaded) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Camiler ve Harita", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+          backgroundColor: AppTheme.primary,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+        ),
+        body: Container(
+          color: isDark ? AppTheme.bgDark : AppTheme.bgLight,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(color: AppTheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  'Yükleniyor...',
+                  style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    List<String> cities = GlobalData.turkeyLocationData.keys.toList()..sort();
+    Color sheetColor = isDark ? AppTheme.cardDark : AppTheme.cardLight;
     Color textColor = isDark ? Colors.white : Colors.black87;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Klavye açılınca harita sıkışmasın
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("Camiler ve Harita", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E7228),
+        title: const Text("Camiler ve Harita", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        backgroundColor: AppTheme.primary,
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
@@ -147,8 +194,8 @@ class _MosquesScreenState extends State<MosquesScreen> {
             children: [
               // FİLTRELER KISMI (Sabit kalsın istedik)
               Container(
-                color: isDark ? Colors.black : Colors.white,
-                padding: const EdgeInsets.all(12.0),
+                color: isDark ? AppTheme.bgDark : AppTheme.bgLight,
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
                     Row(
@@ -196,20 +243,25 @@ class _MosquesScreenState extends State<MosquesScreen> {
                 ),
               ),
               
-              // HARİTA (Geri kalan tüm alanı kaplasın)
+              // HARİTA
               Expanded(
                 child: FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    initialCenter: _initialCenter,
-                    initialZoom: 9.0,
-                    interactionOptions: const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
-                  ),
-                  children: [
-                    TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', userAgentPackageName: 'com.ecenaze.app'),
-                    MarkerLayer(markers: _markers),
-                  ],
-                ),
+                        mapController: _mapController,
+                        options: MapOptions(
+                          initialCenter: _initialCenter,
+                          initialZoom: 9.0,
+                          interactionOptions: const InteractionOptions(
+                            flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                          ),
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.ecenaze.app',
+                          ),
+                          MarkerLayer(markers: _markers),
+                        ],
+                      ),
               ),
             ],
           ),
@@ -227,11 +279,17 @@ class _MosquesScreenState extends State<MosquesScreen> {
                   color: sheetColor,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, spreadRadius: 2, offset: const Offset(0, -2))
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                      offset: const Offset(0, -2),
+                    )
                   ],
                 ),
                 child: ListView(
-                  controller: scrollController, // BU ÇOK ÖNEMLİ: Panel ile listenin senkron kayması için
+                  controller: scrollController,
+                  physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.zero,
                   children: [
                     // GRİ TUTAMAÇ ÇİZGİSİ (Kullanıcı çekebileceğini anlasın)
@@ -253,21 +311,27 @@ class _MosquesScreenState extends State<MosquesScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: 45,
-                            child: ElevatedButton.icon(
-                              onPressed: _openFavoritesScreen,
-                              icon: const Icon(Icons.favorite, color: Colors.white),
-                              label: const Text("FAVORİ CAMİLER", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF1E7228), 
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          FluidScale(
+                            onTap: _openFavoritesScreen,
+                            child: Container(
+                              width: double.infinity,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: AppTheme.primary,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.favorite_rounded, color: Colors.white, size: 20),
+                                  SizedBox(width: 8),
+                                  Text("FAVORİ CAMİLER", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
+                                ],
                               ),
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Text("Tüm Camiler", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+                          Text("Tüm Camiler", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textColor)),
                         ],
                       ),
                     ),
@@ -279,9 +343,9 @@ class _MosquesScreenState extends State<MosquesScreen> {
                             child: Center(child: Text("Cami bulunamadı.", style: TextStyle(color: textColor.withOpacity(0.6)))),
                           )
                         : ListView.builder(
-                            controller: scrollController, // İç liste scroll kontrolü
-                            shrinkWrap: true, // İç içe liste hatasını önler
-                            physics: const ClampingScrollPhysics(), // Kaydırma fiziği
+                            controller: scrollController,
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemCount: _displayedMosques.length,
                             itemBuilder: (context, index) {
@@ -306,11 +370,15 @@ class _MosquesScreenState extends State<MosquesScreen> {
 
   Widget _buildDropdown({required String hint, required String? value, required List<String> items, required ValueChanged<String?> onChanged}) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color bgColor = isDark ? Colors.grey[850]! : Colors.white;
-    Color txtColor = isDark ? Colors.white : Colors.black;
+    Color bgColor = isDark ? AppTheme.cardDark : AppTheme.cardLight;
+    Color txtColor = isDark ? Colors.white : AppTheme.textLight;
     return Container(
-      height: 48, padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.withOpacity(0.4))),
+      height: 48, padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.grey.shade300, width: isDark ? 0.5 : 1),
+      ),
       child: DropdownButtonHideUnderline(child: DropdownButton<String>(value: value, hint: Text(hint, style: TextStyle(fontSize: 14, color: Colors.grey)), isExpanded: true, icon: const Icon(Icons.keyboard_arrow_down, color: Colors.grey), dropdownColor: bgColor, style: TextStyle(color: txtColor), items: items.map((String item) => DropdownMenuItem<String>(value: item, child: Text(item))).toList(), onChanged: onChanged)),
     );
   }
@@ -325,31 +393,45 @@ class _MosqueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color cardBg = isDark ? Colors.grey[900]! : const Color(0xFFC8E6C9).withOpacity(0.5);
-    Color titleColor = isDark ? Colors.white : Colors.black;
-    Color subColor = isDark ? Colors.grey[400]! : Colors.grey[800]!;
+    Color cardBg = isDark ? AppTheme.cardDark : AppTheme.cardLight;
+    Color titleColor = isDark ? Colors.white : AppTheme.textLight;
+    Color subColor = isDark ? Colors.grey[400]! : Colors.grey.shade600;
 
-    return GestureDetector(
+    return FluidScale(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
-      child: Stack(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 12.0), padding: const EdgeInsets.all(12.0),
-            decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12.0), border: isDark ? Border.all(color: Colors.grey[800]!) : null),
-            child: Row(children: [
-              Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)]), child: const Icon(Icons.mosque, color: Color(0xFF1E7228), size: 30)),
-              const SizedBox(width: 16),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(mosque.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titleColor)), 
-                const SizedBox(height: 4), 
-                Row(children: [Icon(Icons.location_on_outlined, size: 14, color: subColor), const SizedBox(width: 4), Expanded(child: Text('${mosque.district} / ${mosque.city}', style: TextStyle(fontSize: 12, color: subColor), overflow: TextOverflow.ellipsis))]),
-                Text(mosque.neighborhood, style: TextStyle(fontSize: 12, color: subColor, fontStyle: FontStyle.italic), maxLines: 2, overflow: TextOverflow.ellipsis)
-              ])),
-              const Padding(padding: EdgeInsets.only(right: 30.0), child: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey)),
-            ]),
-          ),
-          Positioned(top: 0, right: 0, child: IconButton(icon: Icon(isFavorite ? Icons.star : Icons.star_border, color: isFavorite ? Colors.amber : Colors.grey, size: 30), onPressed: onFavoriteToggle)),
-        ],
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(20),
+          border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+          boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
+        ),
+        child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: AppTheme.tintAvatarBg, shape: BoxShape.circle),
+                    child: Icon(Icons.mosque_rounded, color: AppTheme.primary, size: 24),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(mosque.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: titleColor)),
+                    const SizedBox(height: 4),
+                    Row(children: [Icon(Icons.location_on_outlined, size: 14, color: subColor), const SizedBox(width: 4), Expanded(child: Text('${mosque.district} / ${mosque.city}', style: TextStyle(fontSize: 13, color: subColor), overflow: TextOverflow.ellipsis))]),
+                    Text(mosque.neighborhood, style: TextStyle(fontSize: 12, color: subColor, fontStyle: FontStyle.italic), maxLines: 2, overflow: TextOverflow.ellipsis)
+                  ])),
+                  const Padding(padding: EdgeInsets.only(right: 36), child: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey)),
+                ]),
+              ),
+              Positioned(top: 0, right: 0, child: IconButton(icon: Icon(isFavorite ? Icons.star_rounded : Icons.star_border_rounded, color: isFavorite ? Colors.amber : Colors.grey, size: 24), onPressed: onFavoriteToggle)),
+            ],
+        ),
       ),
     );
   }
@@ -395,30 +477,43 @@ class _FavoriteMosquesScreenState extends State<FavoriteMosquesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favori Camilerim", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E7228),
+        title: const Text("Favori Camilerim", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        backgroundColor: AppTheme.primary,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _favoriteMosques.isEmpty
           ? Center(child: Text("Henüz favori cami eklemediniz.", style: TextStyle(color: textColor.withOpacity(0.6))))
           : ListView.builder(
+              physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(12),
               itemCount: _favoriteMosques.length,
               itemBuilder: (context, index) {
                 final mosque = _favoriteMosques[index];
-                return Card(
-                  elevation: 2,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  color: isDark ? Colors.grey[850] : Colors.white,
-                  child: ListTile(
-                    leading: const Icon(Icons.mosque, color: Color(0xFF1E7228), size: 30),
-                    title: Text(mosque.name, style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
-                    subtitle: Text(mosque.neighborhood, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[700]), maxLines: 2, overflow: TextOverflow.ellipsis),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
-                      onPressed: () => _removeFromFavorites(mosque.id),
+                return FluidScale(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppTheme.cardDark : AppTheme.cardLight,
+                      borderRadius: BorderRadius.circular(20),
+                      border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+                      boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
                     ),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MosqueDetailScreen(mosque: mosque))),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      leading: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(color: AppTheme.tintAvatarBg, shape: BoxShape.circle),
+                        child: Icon(Icons.mosque_rounded, color: AppTheme.primary, size: 24),
+                      ),
+                      title: Text(mosque.name, style: TextStyle(fontWeight: FontWeight.w700, color: textColor)),
+                      subtitle: Text(mosque.neighborhood, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey.shade600), maxLines: 2, overflow: TextOverflow.ellipsis),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.redAccent),
+                        onPressed: () => _removeFromFavorites(mosque.id),
+                      ),
+                    ),
                   ),
                 );
               },

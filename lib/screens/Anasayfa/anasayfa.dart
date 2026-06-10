@@ -1,7 +1,10 @@
-import 'dart:async'; // Timer için gerekli
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../models/app_models.dart';
-import '../Detay/detaylar.dart'; 
+import '../../theme/app_theme.dart';
+import '../../widgets/common_widgets.dart';
+import '../Detay/detaylar.dart';
 
 // --- GLOBAL İZİN DEĞİŞKENİ (Hafızada tutulur) ---
 bool globalLocationPermissionGranted = false;
@@ -14,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoading = true;
+
   // --- KONUM VE SAYAÇ DEĞİŞKENLERİ ---
   Timer? _timer;
   String _nextPrayerName = "HESAPLANIYOR";
@@ -32,7 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    
+    Future.delayed(const Duration(milliseconds: 190), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
     if (!globalLocationPermissionGranted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _askLocationPermission();
@@ -117,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Konum izni alındı. Vakitler güncelleniyor..."), backgroundColor: Colors.green));
             },
-            child: const Text("İzin Ver", style: TextStyle(color: Color(0xFF1E7228), fontWeight: FontWeight.bold)),
+            child: Text("İzin Ver", style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -138,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color bgColor = Theme.of(context).scaffoldBackgroundColor;
-    Color textColor = isDark ? Colors.white : Colors.black87;
+    Color textColor = isDark ? Colors.white : AppTheme.textLight;
 
     final DateTime now = DateTime.now();
     final List<String> months = ["", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
@@ -149,8 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: bgColor, 
       appBar: AppBar(
-        title: const Text("Ana Sayfa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E7228),
+        title: const Text("Ana Sayfa", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        backgroundColor: AppTheme.primary,
         centerTitle: true,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -161,10 +168,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              color: Color(0xFF1E7228), 
+              color: AppTheme.primary,
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
             ),
             child: Row(
@@ -174,10 +181,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   children: [
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)]
                       ),
                       padding: const EdgeInsets.all(2), 
                       child: CircleAvatar(
@@ -192,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: const [
                         Text(
                           "E-Cenaze",
-                          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Serif'),
+                          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
                         ),
                         Text(
                           "Hoşgeldiniz",
@@ -204,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Row(
                   children: [
-                    GestureDetector(
+                    FluidScale(
                       onTap: () {
                         if (!globalLocationPermissionGranted) {
                           _askLocationPermission();
@@ -216,9 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                         margin: const EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.white30),
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white24, width: 0.5),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -229,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Text(
                               globalLocationPermissionGranted ? _timeLeftString : "GEREKLİ", 
-                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
                             ),
                           ],
                         ),
@@ -240,8 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 60,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4, offset: const Offset(0, 2))],
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
                         children: [
@@ -249,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 18,
                             decoration: const BoxDecoration(
                               color: Colors.redAccent,
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                             ),
                             child: Center(
                               child: Text(year, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10)),
@@ -259,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Center(
                               child: Text(
                                 dayNumber,
-                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppTheme.textLight),
                               ),
                             ),
                           ),
@@ -267,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.only(bottom: 2),
                             child: Text(
                               monthName, 
-                              style: const TextStyle(fontSize: 9, color: Colors.grey, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 9, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
                             ),
                           ),
                         ],
@@ -282,25 +287,34 @@ class _HomeScreenState extends State<HomeScreen> {
           // --- İÇERİK KISMI ---
           Expanded(
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // SADECE BUGÜNKÜ VEFATLAR KALDI
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
-                    child: Text("Bugünkü Vefatlar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+                    child: Text("Bugünkü Vefatlar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textColor)),
                   ),
                   
-                  ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _people.length,
-                    itemBuilder: (context, index) {
-                      final person = _people[index];
-                      return _PersonCard(person: person);
-                    },
-                  ),
+                  _isLoading
+                      ? ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 6,
+                          itemBuilder: (context, index) => _PersonCardSkeleton(isDark: isDark),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _people.length,
+                          itemBuilder: (context, index) {
+                            final person = _people[index];
+                            return _StaggeredCard(index: index, child: _PersonCard(person: person));
+                          },
+                        ),
                   
                   const SizedBox(height: 20),
                 ],
@@ -313,7 +327,144 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// --- VEFAT EDEN KİŞİ KARTI ---
+// --- İSKELET KART (Shimmer - PersonCard ile aynı boyut) ---
+class _PersonCardSkeleton extends StatelessWidget {
+  final bool isDark;
+
+  const _PersonCardSkeleton({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = isDark ? Colors.white10 : Colors.grey[300]!;
+    final highlightColor = isDark
+        ? AppTheme.primary.withValues(alpha: 0.15)
+        : AppTheme.primary.withValues(alpha: 0.2);
+
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      direction: ShimmerDirection.ltr,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: baseColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: baseColor,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 16,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: baseColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 12,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        color: baseColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      height: 12,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: baseColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: 88,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: baseColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// --- STAGGERED YÜKLEME (FadeIn + 10px Slide, 400ms, easeOutQuart) ---
+class _StaggeredCard extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const _StaggeredCard({required this.index, required this.child});
+
+  @override
+  State<_StaggeredCard> createState() => _StaggeredCardState();
+}
+
+class _StaggeredCardState extends State<_StaggeredCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fade;
+  late Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _fade = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart),
+    );
+    _slide = Tween<Offset>(begin: const Offset(0, 0.03), end: Offset.zero).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart),
+    );
+    Future.delayed(Duration(milliseconds: widget.index * 50), () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(
+        position: _slide,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+// --- VEFAT EDEN KİŞİ KARTI (FluidScale, ripple yok) ---
 class _PersonCard extends StatelessWidget {
   final Person person;
   const _PersonCard({required this.person});
@@ -321,75 +472,63 @@ class _PersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color cardColor = isDark ? Colors.grey[900]! : Colors.white;
-    Color textColor = isDark ? Colors.white : Colors.black87;
-    Color subTextColor = isDark ? Colors.grey[400]! : Colors.grey;
+    Color cardColor = isDark ? AppTheme.cardDark : AppTheme.cardLight;
+    Color textColor = isDark ? Colors.white : AppTheme.textLight;
+    Color subTextColor = isDark ? Colors.grey[400]! : Colors.grey.shade600;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: cardColor, 
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6, offset: const Offset(0, 3)),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F5E9).withOpacity(isDark ? 0.1 : 1), 
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(
-                  person.name.isNotEmpty ? person.name[0] : "?",
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E7228)),
+    return FluidScale(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person))),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(20),
+          border: isDark ? Border.all(color: Colors.white12, width: 0.5) : null,
+          boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 1, offset: const Offset(0, 1))],
+        ),
+        child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppTheme.tintAvatarBg,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Center(
+                    child: Text(
+                      person.name.isNotEmpty ? person.name[0].toUpperCase() : "?",
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppTheme.primary),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    person.name,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(person.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: textColor), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 4),
+                      Text('${person.mosqueName}, ${person.city}', style: TextStyle(fontSize: 13, color: subTextColor, fontWeight: FontWeight.w400)),
+                      const SizedBox(height: 2),
+                      Text('${person.funeralTime} Vakti', style: const TextStyle(fontSize: 13, color: AppTheme.primary, fontWeight: FontWeight.w600)),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${person.mosqueName}, ${person.city}',
-                    style: TextStyle(fontSize: 12, color: subTextColor),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  constraints: const BoxConstraints(minHeight: 48),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primary,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${person.funeralTime} Vakti',
-                    style: const TextStyle(fontSize: 12, color: Color(0xFF1E7228), fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
+                  alignment: Alignment.center,
+                  child: const Text('Detay', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person)));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1E7228),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                minimumSize: const Size(0, 36),
-              ),
-              child: const Text('Detay', style: TextStyle(fontSize: 12)),
-            ),
-          ],
         ),
       ),
     );
